@@ -1,12 +1,22 @@
-export type TTeacher = {
-  teacherName: string;
+export interface ITeacher {
+  _id?: string;
+  name: string;
   email: string;
-  salary: number;
-  profileImg?: string;
-  phone?: string;
-  // subject: string;
-  // qualifications: string[];
-  // joiningDate: string;
-  // createdAt?: Date;
-  // updatedAt?: Date;
-};
+  assignedSubjects: IAssignedSubject[];
+  assignedClasses: IAssignedClass[];
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface IAssignedSubject {
+  subjectId: string;
+  subjectName: string;
+  group?: string; // Science, Commerce, Arts (only for 9-12)
+}
+
+export interface IAssignedClass {
+  classId: string;
+  className: string;
+  section: string;
+  shift?: string; // Morning/Evening
+}

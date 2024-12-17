@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
-import { TeacherServices } from "./teacher.service";
 import sendResponse from "../../utils/sendResponse";
+import { TeacherServices } from "./teacher.service";
 
 const createTeacher = catchAsync(async (req: Request, res: Response) => {
   const result = await TeacherServices.createTeacherInDB(req.body);
@@ -29,7 +29,7 @@ const getAllTeachers = catchAsync(async (_req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "All teachers retrieved successfully",
+    message: "Teachers retrieved successfully",
     data: result,
   });
 });
@@ -48,14 +48,11 @@ const updateTeacher = catchAsync(async (req: Request, res: Response) => {
 });
 
 const deleteTeacher = catchAsync(async (req: Request, res: Response) => {
-  const result = await TeacherServices.deleteTeacherFromDB(
-    req.params.teacherId,
-  );
+  await TeacherServices.deleteTeacherFromDB(req.params.teacherId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "Teacher deleted successfully",
-    data: result,
   });
 });
 

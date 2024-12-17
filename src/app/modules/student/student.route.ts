@@ -1,61 +1,25 @@
-import express from "express";
+import { Router } from "express";
 import { StudentControllers } from "./student.controller";
-import validateRequest from "../../middlewares/validateRequest";
 import { StudentValidations } from "./student.validation";
-import { USER_ROLE } from "../user/user.constant";
-import auth from "../../middlewares/auth";
+import validateRequest from "../../middlewares/validateRequest";
 
-const router = express.Router();
+const router = Router();
 
 router.post(
   "/create-student",
-  auth(USER_ROLE.admin, USER_ROLE.superAdmin),
   validateRequest(StudentValidations.createStudentValidationSchema),
-  StudentControllers.createStudent,
-);
-// single student
-router.get(
-  "/:email",
-  auth(USER_ROLE.student, USER_ROLE.admin, USER_ROLE.superAdmin),
-  StudentControllers.getStudent,
+  StudentControllers.createStudent
 );
 
-// all students
-router.get(
-  "/",
-  auth(USER_ROLE.admin, USER_ROLE.superAdmin),
-  StudentControllers.getAllStudents,
-);
+router.get("/:studentId", StudentControllers.getStudent);
+router.get("/", StudentControllers.getAllStudents);
 
-// TODO: add student auth role
-router.post(
-  "/initialize-course-progress",
-  validateRequest(StudentValidations.initializeCourseProgressValidationSchema),
-  StudentControllers.initializeCourseProgress,
-);
-
-router.get(
-  "/user/courses",
-  auth(USER_ROLE.student, USER_ROLE.admin, USER_ROLE.superAdmin),
-  StudentControllers.getStudentCourses,
-);
-
-router.get(
-  "/:studentId/courses/:courseId",
-  StudentControllers.getStudentCourseDetails,
-);
-
-// TODO: add student auth role
-router.post(
-  "/get-last-completed-lesson",
-  StudentControllers.getLastCompletedLesson,
-);
-
-// TODO: add student auth role
 router.patch(
-  "/update-student-lesson-progress",
-  validateRequest(StudentValidations.updateLessonProgressValidationSchema),
-  StudentControllers.updateLessonProgress,
+  "/update-student/:studentId",
+  validateRequest(StudentValidations.updateStudentValidationSchema),
+  StudentControllers.updateStudent
 );
+
+router.delete("/:studentId", StudentControllers.deleteStudent);
 
 export const StudentRoutes = router;

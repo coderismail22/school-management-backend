@@ -1,68 +1,33 @@
 import { Schema, model } from "mongoose";
-import { TTeacher } from "./teacher.interface";
+import { ITeacher } from "./teacher.interface";
 
-const TeacherSchema = new Schema<TTeacher>(
+const AssignedSubjectSchema = new Schema({
+  subjectId: { type: String, required: true },
+  subjectName: { type: String, required: true },
+  group: { type: String },
+});
+
+const AssignedClassSchema = new Schema({
+  classId: { type: String, required: true },
+  className: { type: String, required: true },
+  section: { type: String, required: true },
+  shift: { type: String },
+});
+
+const TeacherSchema = new Schema<ITeacher>(
   {
-    teacherName: {
-      type: String,
-      required: [true, "Teacher name is required"],
-      trim: true,
-    },
+    name: { type: String, required: true, trim: true },
     email: {
       type: String,
-      required: [true, "Email is required"],
+      required: true,
       unique: true,
-      trim: true,
-      validate: {
-        validator: function (value: string) {
-          return /^\S+@\S+\.\S+$/.test(value);
-        },
-        message: "Email must be valid",
-      },
+      lowercase: true,
+      match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
     },
-    profileImg: {
-      type: String,
-      trim: true,
-      default: "",
-    },
-    salary: {
-      type: Number,
-      trim: true,
-      default: 0,
-    },
-    phone: {
-      type: String,
-      trim: true,
-      default: null,
-    },
-
-    // subject: {
-    //   type: String,
-    //   required: [true, "Subject is required"],
-    //   trim: true,
-    // },
-    // qualifications: {
-    //   type: [String],
-    //   required: [true, "Qualifications are required"],
-    //   validate: {
-    //     validator: function (value: string[]) {
-    //       return value.length > 0 && value.every((v) => v.trim().length > 0);
-    //     },
-    //     message: "Qualifications must not be empty",
-    //   },
-    // },
-    // joiningDate: {
-    //   type: String,
-    //   required: [true, "Joining date is required"],
-    //   validate: {
-    //     validator: function (value: string) {
-    //       return !isNaN(Date.parse(value));
-    //     },
-    //     message: "Joining date must be a valid date (e.g., YYYY-MM-DD)",
-    //   },
-    // },
+    assignedSubjects: { type: [AssignedSubjectSchema], default: [] },
+    assignedClasses: { type: [AssignedClassSchema], default: [] },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
-export const Teacher = model<TTeacher>("Teacher", TeacherSchema);
+export const Teacher = model<ITeacher>("Teacher", TeacherSchema);
