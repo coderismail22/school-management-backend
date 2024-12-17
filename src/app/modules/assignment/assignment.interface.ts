@@ -1,21 +1,10 @@
-export interface IResult {
+export interface IAssignment {
   _id?: string;
-  studentId: string;
-  examId: string;
-  totalMarks: number;
-  grade: string;
-  gradePoint: number;
-  subjectResults: ISubjectResult[];
-}
-
-export interface ISubjectResult {
+  teacherId: string;
+  classId: string;
+  section: string;
+  group?: string; // Science, Commerce, Arts
   subjectId: string;
-  marks: {
-    mcq?: number;
-    cq?: number;
-    practical?: number;
-    total: number;
-  };
-  grade: string;
-  gradePoint: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

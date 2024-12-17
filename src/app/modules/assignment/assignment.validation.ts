@@ -1,29 +1,23 @@
 import { z } from "zod";
 
-const subjectResultSchema = z.object({
-  subjectId: z.string().min(1, "Subject ID is required"),
-  marks: z.object({
-    mcq: z.number().optional(),
-    cq: z.number().optional(),
-    practical: z.number().optional(),
-    total: z.number().positive("Total marks are required"),
+export const AssignmentValidations = {
+  createAssignmentSchema: z.object({
+    body: z.object({
+      teacherId: z.string().min(1, "Teacher ID is required"),
+      classId: z.string().min(1, "Class ID is required"),
+      section: z.string().min(1, "Section is required"),
+      group: z.string().optional(),
+      subjectId: z.string().min(1, "Subject ID is required"),
+    }),
   }),
-  grade: z.string().min(1, "Grade is required"),
-  gradePoint: z.number().min(0, "Grade point must be positive"),
-});
 
-const resultSchema = z.object({
-  studentId: z.string().min(1, "Student ID is required"),
-  examId: z.string().min(1, "Exam ID is required"),
-  totalMarks: z.number().positive("Total marks are required"),
-  grade: z.string().min(1, "Grade is required"),
-  gradePoint: z.number().min(0, "Grade point must be positive"),
-  subjectResults: z.array(subjectResultSchema),
-});
-
-export const ResultValidations = {
-  createResultSchema: z.object({ body: resultSchema }),
-  updateResultSchema: z.object({
-    body: resultSchema.partial(),
+  updateAssignmentSchema: z.object({
+    body: z.object({
+      teacherId: z.string().optional(),
+      classId: z.string().optional(),
+      section: z.string().optional(),
+      group: z.string().optional(),
+      subjectId: z.string().optional(),
+    }),
   }),
 };

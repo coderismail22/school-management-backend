@@ -1,46 +1,49 @@
-import { ResultModel } from "./assignment.model";
-import { IResult } from "./assignment.interface";
+import { AssignmentModel } from "./assignment.model";
+import { IAssignment } from "./assignment.interface";
 import httpStatus from "http-status";
 import AppError from "../../errors/AppError";
 
-const createResultInDB = async (payload: IResult) => {
-  return await ResultModel.create(payload);
+const createAssignmentInDB = async (payload: IAssignment) => {
+  return await AssignmentModel.create(payload);
 };
 
-const getResultFromDB = async (resultId: string) => {
-  const result = await ResultModel.findById(resultId);
-  if (!result) throw new AppError(httpStatus.NOT_FOUND, "Result not found");
-  return result;
+const getAssignmentFromDB = async (assignmentId: string) => {
+  const assignment = await AssignmentModel.findById(assignmentId);
+  if (!assignment)
+    throw new AppError(httpStatus.NOT_FOUND, "Assignment not found");
+  return assignment;
 };
 
-const getAllResultsFromDB = async () => {
-  return await ResultModel.find();
+const getAllAssignmentsFromDB = async () => {
+  return await AssignmentModel.find();
 };
 
-const updateResultInDB = async (
-  resultId: string,
-  payload: Partial<IResult>,
+const updateAssignmentInDB = async (
+  assignmentId: string,
+  payload: Partial<IAssignment>,
 ) => {
-  const updatedResult = await ResultModel.findByIdAndUpdate(resultId, payload, {
-    new: true,
-    runValidators: true,
-  });
-  if (!updatedResult)
-    throw new AppError(httpStatus.NOT_FOUND, "Result not found");
-  return updatedResult;
+  const updatedAssignment = await AssignmentModel.findByIdAndUpdate(
+    assignmentId,
+    payload,
+    { new: true, runValidators: true },
+  );
+  if (!updatedAssignment)
+    throw new AppError(httpStatus.NOT_FOUND, "Assignment not found");
+  return updatedAssignment;
 };
 
-const deleteResultFromDB = async (resultId: string) => {
-  const deletedResult = await ResultModel.findByIdAndDelete(resultId);
-  if (!deletedResult)
-    throw new AppError(httpStatus.NOT_FOUND, "Result not found");
-  return deletedResult;
+const deleteAssignmentFromDB = async (assignmentId: string) => {
+  const deletedAssignment =
+    await AssignmentModel.findByIdAndDelete(assignmentId);
+  if (!deletedAssignment)
+    throw new AppError(httpStatus.NOT_FOUND, "Assignment not found");
+  return deletedAssignment;
 };
 
-export const ResultServices = {
-  createResultInDB,
-  getResultFromDB,
-  getAllResultsFromDB,
-  updateResultInDB,
-  deleteResultFromDB,
+export const AssignmentServices = {
+  createAssignmentInDB,
+  getAssignmentFromDB,
+  getAllAssignmentsFromDB,
+  updateAssignmentInDB,
+  deleteAssignmentFromDB,
 };

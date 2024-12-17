@@ -2,65 +2,69 @@ import { Request, Response } from "express";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
-import { ResultServices } from "./assignment.service";
+import { AssignmentServices } from "./assignment.service";
 
-const createResult = catchAsync(async (req: Request, res: Response) => {
-  const result = await ResultServices.createResultInDB(req.body);
+const createAssignment = catchAsync(async (req: Request, res: Response) => {
+  const assignment = await AssignmentServices.createAssignmentInDB(req.body);
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
-    message: "Result created successfully",
-    data: result,
+    message: "Assignment created successfully",
+    data: assignment,
   });
 });
 
-const getResult = catchAsync(async (req: Request, res: Response) => {
-  const result = await ResultServices.getResultFromDB(req.params.resultId);
+const getAssignment = catchAsync(async (req: Request, res: Response) => {
+  const assignment = await AssignmentServices.getAssignmentFromDB(
+    req.params.assignmentId
+  );
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Result fetched successfully",
-    data: result,
+    message: "Assignment fetched successfully",
+    data: assignment,
   });
 });
 
-const getAllResults = catchAsync(async (req: Request, res: Response) => {
-  const results = await ResultServices.getAllResultsFromDB();
+const getAllAssignments = catchAsync(async (req: Request, res: Response) => {
+  const assignments = await AssignmentServices.getAllAssignmentsFromDB();
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "All results fetched successfully",
-    data: results,
+    message: "All assignments fetched successfully",
+    data: assignments,
   });
 });
 
-const updateResult = catchAsync(async (req: Request, res: Response) => {
-  const result = await ResultServices.updateResultInDB(
-    req.params.resultId,
+const updateAssignment = catchAsync(async (req: Request, res: Response) => {
+  const assignment = await AssignmentServices.updateAssignmentInDB(
+    req.params.assignmentId,
     req.body
   );
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Result updated successfully",
-    data: result,
+    message: "Assignment updated successfully",
+    data: assignment,
   });
 });
 
-const deleteResult = catchAsync(async (req: Request, res: Response) => {
-  const result = await ResultServices.deleteResultFromDB(req.params.resultId);
+const deleteAssignment = catchAsync(async (req: Request, res: Response) => {
+  const assignment = await AssignmentServices.deleteAssignmentFromDB(
+    req.params.assignmentId
+  );
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Result deleted successfully",
-    data: result,
+    message: "Assignment deleted successfully",
+    data: assignment,
   });
 });
 
-export const ResultControllers = {
-  createResult,
-  getResult,
-  getAllResults,
-  updateResult,
-  deleteResult,
+export const AssignmentControllers = {
+  createAssignment,
+  getAssignment,
+  getAllAssignments,
+  updateAssignment,
+  deleteAssignment,
 };

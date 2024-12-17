@@ -1,28 +1,18 @@
 import { Schema, model } from "mongoose";
-import { IResult, ISubjectResult } from "./assignment.interface";
+import { IAssignment } from "./assignment.interface";
 
-const SubjectResultSchema = new Schema<ISubjectResult>({
-  subjectId: { type: String, required: true },
-  marks: {
-    mcq: { type: Number },
-    cq: { type: Number },
-    practical: { type: Number },
-    total: { type: Number, required: true },
-  },
-  grade: { type: String, required: true },
-  gradePoint: { type: Number, required: true },
-});
-
-const ResultSchema = new Schema<IResult>(
+const AssignmentSchema = new Schema<IAssignment>(
   {
-    studentId: { type: String, required: true },
-    examId: { type: String, required: true },
-    totalMarks: { type: Number, required: true },
-    grade: { type: String, required: true },
-    gradePoint: { type: Number, required: true },
-    subjectResults: [SubjectResultSchema],
+    teacherId: { type: String, required: true },
+    classId: { type: String, required: true },
+    section: { type: String, required: true },
+    group: { type: String },
+    subjectId: { type: String, required: true },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
-export const ResultModel = model<IResult>("Result", ResultSchema);
+export const AssignmentModel = model<IAssignment>(
+  "Assignment",
+  AssignmentSchema
+);
