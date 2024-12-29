@@ -8,8 +8,49 @@ import { User } from "./user.model";
 import { Admin } from "../admin/admin.model";
 import { TAdmin } from "../admin/admin.interface";
 import { IStudent } from "../student/student.interface";
+import { ITeacher } from "../teacher/teacher.interface";
 
-const createStudentIntoDB = async (payload: IStudent) => {
+const createTeacherInDB = async (payload: ITeacher) => {
+  // create a user object
+  const userData: Partial<IUser> = {};
+  userData.name = payload.name;
+  userData.role = "teacher";
+  userData.email = payload.email;
+  userData.password = payload.password;
+  userData.hasAccess = true;
+
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+    //TODO: Generate Dynamic ID
+    //TODO: Upload image to Cloudinary using Multer
+
+    // create a user (transaction-1)
+    const newUser = await User.create([userData], { session });
+
+    if (!newUser.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, "Failed to create user");
+    }
+
+    // create a student (transaction-2)
+    const newStudent = await Student.create([payload], { session });
+
+    if (!newStudent.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, "Failed to create teacher");
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return newStudent;
+  } catch (err: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw err;
+  }
+};
+const createStudentInDB = async (payload: IStudent) => {
   // create a user object
   const userData: Partial<IUser> = {};
   userData.name = payload.name;
@@ -49,7 +90,7 @@ const createStudentIntoDB = async (payload: IStudent) => {
   }
 };
 
-const createAdminIntoDB = async (payload: TAdmin) => {
+const createAdminInDB = async (payload: TAdmin) => {
   // create a user object
   const userData: Partial<IUser> = {};
   userData.name = payload.name;
@@ -124,7 +165,7 @@ const getMeFromDB = async (userId: string, role: string) => {
   return result;
 };
 
-const changeStatusIntoDB = async (id: string, status: string) => {
+const changeStatusInDB = async (id: string, status: string) => {
   const result = await User.findByIdAndUpdate(
     id,
     { status },
@@ -134,8 +175,9 @@ const changeStatusIntoDB = async (id: string, status: string) => {
 };
 
 export const UserServices = {
-  createStudentIntoDB,
-  createAdminIntoDB,
+  createTeacherInDB,
+  createStudentInDB,
+  createAdminInDB,
   getMeFromDB,
-  changeStatusIntoDB,
+  changeStatusInDB,
 };

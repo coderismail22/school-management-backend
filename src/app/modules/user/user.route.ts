@@ -6,9 +6,17 @@ import auth from "../../middlewares/auth";
 import { UserValidations } from "./user.validation";
 import { AdminValidations } from "../admin/admin.validation";
 import { USER_ROLE } from "./user.constant";
+import { TeacherValidations } from "../teacher/teacher.validation";
 
 const router = express.Router();
 
+// create teacher
+router.post(
+  "/create-teacher",
+  // auth(USER_ROLE.superAdmin, USER_ROLE.admin), //TODO: Add a auth role
+  validateRequest(TeacherValidations.createTeacherValidationSchema),
+  UserControllers.createStudent,
+);
 // create student
 router.post(
   "/create-student",

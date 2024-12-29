@@ -5,4 +5,3 @@ export const USER_ROLE = {
   student: "student",
 } as const;
 
-export const STATUS = ["in-progress", "blocked"];

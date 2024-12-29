@@ -2,7 +2,6 @@ import bcrypt from "bcrypt";
 import { Schema, model } from "mongoose";
 import config from "../../config";
 import { IUser, UserModel } from "./user.interface";
-import { STATUS } from "./user.constant";
 const userSchema = new Schema<IUser>(
   {
     name: {
@@ -25,7 +24,7 @@ const userSchema = new Schema<IUser>(
 
     role: {
       type: String,
-      enum: ["superAdmin", "student", "faculty", "admin"],
+      enum: ["superAdmin", "student", "teacher", "admin"],
     },
     status: {
       type: String,

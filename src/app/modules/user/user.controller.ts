@@ -3,6 +3,16 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { UserServices } from "./user.service";
 
+const createTeacher = catchAsync(async (req, res) => {
+  const result = await UserServices.createTeacherInDB(req.body);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Teacher is created successfully",
+    data: result,
+  });
+});
+
 const createStudent = catchAsync(async (req, res) => {
   const result = await UserServices.createStudentIntoDB(req.body);
   sendResponse(res, {
@@ -51,6 +61,7 @@ const changeStatus = catchAsync(async (req, res) => {
 });
 
 export const UserControllers = {
+  createTeacher,
   createStudent,
   createAdmin,
   getMe,

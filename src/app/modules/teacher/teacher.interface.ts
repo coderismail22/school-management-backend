@@ -1,7 +1,14 @@
 export interface ITeacher {
   _id?: string;
   name: string;
+  teacherId: string;
+  profileImg: string;
   email: string;
+  address: string;
+  phone: string;
+  bloodGroup: string;
+  salary: number;
+  password: string;
   assignedSubjects: IAssignedSubject[];
   assignedClasses: IAssignedClass[];
   createdAt?: Date;
