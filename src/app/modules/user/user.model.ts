@@ -28,7 +28,7 @@ const userSchema = new Schema<IUser>(
     },
     status: {
       type: String,
-      enum: STATUS,
+      // enum: STATUS,
       default: "in-progress",
     },
     isDeleted: {
