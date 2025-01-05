@@ -17,6 +17,8 @@ const AssignedClassSchema = new Schema({
 const TeacherSchema = new Schema<ITeacher>(
   {
     name: { type: String, required: true, trim: true },
+    teacherId: { type: String, required: true, trim: true },
+    profileImg: { type: String, required: true, trim: true },
     email: {
       type: String,
       required: true,
@@ -24,10 +26,15 @@ const TeacherSchema = new Schema<ITeacher>(
       lowercase: true,
       match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
     },
+    address: { type: String, required: true, trim: true },
+    phone: { type: String, required: true, trim: true },
+    bloodGroup: { type: String, required: true, trim: true },
+    salary: { type: Number, required: true, trim: true },
+    password: { type: String, required: true, trim: true },
     assignedSubjects: { type: [AssignedSubjectSchema], default: [] },
     assignedClasses: { type: [AssignedClassSchema], default: [] },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const Teacher = model<ITeacher>("Teacher", TeacherSchema);

@@ -15,8 +15,17 @@ router.post(
   "/create-teacher",
   // auth(USER_ROLE.superAdmin, USER_ROLE.admin), //TODO: Add a auth role
   validateRequest(TeacherValidations.createTeacherValidationSchema),
-  UserControllers.createStudent,
+  UserControllers.createTeacher,
 );
+
+// update teacher
+router.post(
+  "/update-teacher/:teacherId",
+  // auth(USER_ROLE.superAdmin, USER_ROLE.admin), //TODO: Add a auth role
+  validateRequest(TeacherValidations.updateTeacherValidationSchema),
+  UserControllers.updateTeacher,
+);
+
 // create student
 router.post(
   "/create-student",

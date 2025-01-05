@@ -9,6 +9,7 @@ import { Admin } from "../admin/admin.model";
 import { TAdmin } from "../admin/admin.interface";
 import { IStudent } from "../student/student.interface";
 import { ITeacher } from "../teacher/teacher.interface";
+import { Teacher } from "../teacher/teacher.model";
 
 const createTeacherInDB = async (payload: ITeacher) => {
   // create a user object
@@ -17,7 +18,7 @@ const createTeacherInDB = async (payload: ITeacher) => {
   userData.role = "teacher";
   userData.email = payload.email;
   userData.password = payload.password;
-  userData.hasAccess = true;
+  // userData.hasAccess = true;
 
   const session = await mongoose.startSession();
 
@@ -28,13 +29,12 @@ const createTeacherInDB = async (payload: ITeacher) => {
 
     // create a user (transaction-1)
     const newUser = await User.create([userData], { session });
-
     if (!newUser.length) {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to create user");
     }
 
     // create a student (transaction-2)
-    const newStudent = await Student.create([payload], { session });
+    const newStudent = await Teacher.create([payload], { session });
 
     if (!newStudent.length) {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to create teacher");
@@ -50,6 +50,94 @@ const createTeacherInDB = async (payload: ITeacher) => {
     throw err;
   }
 };
+
+const updateTeacherInDB = async (teacherId: string, payload: any) => {
+  const { ...updates } = payload;
+
+  if (!teacherId) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Teacher ID is required");
+  }
+
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    // Define which fields belong to the User model
+    const userFields: Array<keyof IUser> = [
+      "name",
+      "email",
+      "password",
+      "status",
+    ];
+    // Define which fields belong to the Teacher model
+    const teacherFields: Array<keyof ITeacher> = [
+      "profileImg",
+      "address",
+      "phone",
+      "bloodGroup",
+      "salary",
+    ];
+
+    // Separate updates for User and Teacher
+    const userUpdates: Partial<IUser> = {};
+    const teacherUpdates: Partial<ITeacher> = {};
+
+    Object.keys(updates).forEach((key) => {
+      if (userFields.includes(key as keyof IUser)) {
+        userUpdates[key as keyof IUser] = updates[key];
+      } else if (teacherFields.includes(key as keyof ITeacher)) {
+        teacherUpdates[key as keyof ITeacher] = updates[key];
+      }
+    });
+
+    // Find the teacher document by ID
+    const teacher = await Teacher.findById(teacherId).session(session);
+    if (!teacher) {
+      throw new AppError(httpStatus.NOT_FOUND, "Teacher not found");
+    }
+
+    // Find the related user document by email or user ID from the teacher document
+    const user = await User.findOne({ email: teacher.email }).session(session);
+    if (!user) {
+      throw new AppError(httpStatus.NOT_FOUND, "Associated user not found");
+    }
+
+    // Update the user details
+    if (Object.keys(userUpdates).length > 0) {
+      const updatedUser = await User.findByIdAndUpdate(
+        user._id,
+        { $set: userUpdates },
+        { new: true, session },
+      );
+      if (!updatedUser) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Failed to update user");
+      }
+    }
+
+    // Update the teacher details
+    if (Object.keys(teacherUpdates).length > 0) {
+      const updatedTeacher = await Teacher.findByIdAndUpdate(
+        teacherId,
+        { $set: teacherUpdates },
+        { new: true, session },
+      );
+      if (!updatedTeacher) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Failed to update teacher");
+      }
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return { message: "Teacher and User updated successfully" };
+  } catch (err: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw err;
+  }
+};
+
 const createStudentInDB = async (payload: IStudent) => {
   // create a user object
   const userData: Partial<IUser> = {};
@@ -176,6 +264,7 @@ const changeStatusInDB = async (id: string, status: string) => {
 
 export const UserServices = {
   createTeacherInDB,
+  updateTeacherInDB,
   createStudentInDB,
   createAdminInDB,
   getMeFromDB,

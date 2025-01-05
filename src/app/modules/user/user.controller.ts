@@ -13,6 +13,18 @@ const createTeacher = catchAsync(async (req, res) => {
   });
 });
 
+const updateTeacher = catchAsync(async (req, res) => {
+  const teacherId = req.params.teacherId;
+  const teacherUpdates = ;
+    const result = await UserServices.updateTeacherInDB(teacherId, req.body,);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Teacher is updated successfully",
+    data: result,
+  });
+});
+
 const createStudent = catchAsync(async (req, res) => {
   const result = await UserServices.createStudentIntoDB(req.body);
   sendResponse(res, {
@@ -62,6 +74,7 @@ const changeStatus = catchAsync(async (req, res) => {
 
 export const UserControllers = {
   createTeacher,
+  updateTeacher,
   createStudent,
   createAdmin,
   getMe,
