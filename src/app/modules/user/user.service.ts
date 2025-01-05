@@ -70,8 +70,11 @@ const updateTeacherInDB = async (teacherId: string, payload: any) => {
       "password",
       "status",
     ];
+
     // Define which fields belong to the Teacher model
     const teacherFields: Array<keyof ITeacher> = [
+      "email",
+      "password",
       "profileImg",
       "address",
       "phone",
@@ -86,10 +89,18 @@ const updateTeacherInDB = async (teacherId: string, payload: any) => {
     Object.keys(updates).forEach((key) => {
       if (userFields.includes(key as keyof IUser)) {
         userUpdates[key as keyof IUser] = updates[key];
-      } else if (teacherFields.includes(key as keyof ITeacher)) {
+      }
+      if (teacherFields.includes(key as keyof ITeacher)) {
         teacherUpdates[key as keyof ITeacher] = updates[key];
       }
     });
+
+    if (
+      Object.keys(userUpdates).length === 0 &&
+      Object.keys(teacherUpdates).length === 0
+    ) {
+      throw new AppError(httpStatus.BAD_REQUEST, "No valid fields to update");
+    }
 
     // Find the teacher document by ID
     const teacher = await Teacher.findById(teacherId).session(session);
@@ -97,22 +108,13 @@ const updateTeacherInDB = async (teacherId: string, payload: any) => {
       throw new AppError(httpStatus.NOT_FOUND, "Teacher not found");
     }
 
+    // Preserve the original email before updates
+    const originalEmail = teacher.email;
+
     // Find the related user document by email or user ID from the teacher document
-    const user = await User.findOne({ email: teacher.email }).session(session);
+    const user = await User.findOne({ email: originalEmail }).session(session);
     if (!user) {
       throw new AppError(httpStatus.NOT_FOUND, "Associated user not found");
-    }
-
-    // Update the user details
-    if (Object.keys(userUpdates).length > 0) {
-      const updatedUser = await User.findByIdAndUpdate(
-        user._id,
-        { $set: userUpdates },
-        { new: true, session },
-      );
-      if (!updatedUser) {
-        throw new AppError(httpStatus.BAD_REQUEST, "Failed to update user");
-      }
     }
 
     // Update the teacher details
@@ -127,10 +129,22 @@ const updateTeacherInDB = async (teacherId: string, payload: any) => {
       }
     }
 
+    // Update the user details
+    if (Object.keys(userUpdates).length > 0) {
+      const updatedUser = await User.findByIdAndUpdate(
+        user._id,
+        { $set: userUpdates },
+        { new: true, session },
+      );
+      if (!updatedUser) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Failed to update user");
+      }
+    }
+
     await session.commitTransaction();
     await session.endSession();
 
-    return { message: "Teacher and User updated successfully" };
+    return { user, teacher };
   } catch (err: any) {
     await session.abortTransaction();
     await session.endSession();

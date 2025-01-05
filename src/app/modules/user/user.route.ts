@@ -19,7 +19,7 @@ router.post(
 );
 
 // update teacher
-router.post(
+router.patch(
   "/update-teacher/:teacherId",
   // auth(USER_ROLE.superAdmin, USER_ROLE.admin), //TODO: Add a auth role
   validateRequest(TeacherValidations.updateTeacherValidationSchema),

@@ -15,8 +15,7 @@ const createTeacher = catchAsync(async (req, res) => {
 
 const updateTeacher = catchAsync(async (req, res) => {
   const teacherId = req.params.teacherId;
-  const teacherUpdates = ;
-    const result = await UserServices.updateTeacherInDB(teacherId, req.body,);
+  const result = await UserServices.updateTeacherInDB(teacherId, req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
