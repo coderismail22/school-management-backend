@@ -5,6 +5,7 @@ import { TeacherRoutes } from "../modules/teacher/teacher.route";
 import { UserRoutes } from "../modules/user/user.route";
 import { AuthRoutes } from "../modules/auth/auth.route";
 import { NoticeRoutes } from "../modules/notice/notice.route";
+import { EventRoutes } from "../modules/event/event.route";
 
 const router = Router();
 
@@ -32,6 +33,10 @@ const moduleRoutes = [
   {
     path: "/notice",
     route: NoticeRoutes,
+  },
+  {
+    path: "/event",
+    route: EventRoutes,
   },
 ];
 
