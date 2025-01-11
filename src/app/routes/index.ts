@@ -7,6 +7,7 @@ import { AuthRoutes } from "../modules/auth/auth.route";
 import { NoticeRoutes } from "../modules/notice/notice.route";
 import { EventRoutes } from "../modules/event/event.route";
 import { AdministrationRoutes } from "../modules/administration/administration.route";
+import { NoticeBannerRoutes } from "../modules/noticeBanner/noticeBanner.route";
 
 const router = Router();
 
@@ -42,6 +43,10 @@ const moduleRoutes = [
   {
     path: "/administration",
     route: AdministrationRoutes,
+  },
+  {
+    path: "/noticebanner",
+    route: NoticeBannerRoutes,
   },
 ];
 

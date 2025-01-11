@@ -14,7 +14,7 @@ const getEventFromDB = async (eventId: string) => {
 };
 
 const getAllEventsFromDB = async () => {
-  return await Event.find();
+  return await Event.find().sort({ createdAt: -1 });
 };
 
 const updateEventInDB = async (eventId: string, updateData: any) => {
