@@ -17,7 +17,7 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: [
-      "https://falah-school-management.netlify.app",
+      "https://blue-bird-school-bd.netlify.app",
       "http://localhost:5173",
     ],
     credentials: true,

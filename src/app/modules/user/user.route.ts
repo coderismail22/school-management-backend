@@ -27,26 +27,26 @@ router.patch(
 );
 
 // create student
-router.post(
-  "/create-student",
-  // auth(USER_ROLE.superAdmin, USER_ROLE.admin), //TODO: Add a auth role
-  validateRequest(StudentValidations.createStudentValidationSchema),
-  UserControllers.createStudent,
-);
+// router.post(
+//   "/create-student",
+//   // auth(USER_ROLE.superAdmin, USER_ROLE.admin), //TODO: Add a auth role
+//   validateRequest(StudentValidations.createStudentValidationSchema),
+//   UserControllers.createStudent,
+// );
 
-router.post(
-  "/create-admin",
-  // auth(USER_ROLE.superAdmin, USER_ROLE.admin), //TODO: Add a auth role
-  validateRequest(AdminValidations.createAdminValidationSchema),
-  UserControllers.createAdmin,
-);
+// router.post(
+//   "/create-admin",
+//   // auth(USER_ROLE.superAdmin, USER_ROLE.admin), //TODO: Add a auth role
+//   validateRequest(AdminValidations.createAdminValidationSchema),
+//   UserControllers.createAdmin,
+// );
 
-router.post(
-  "/change-status/:id",
-  auth("admin"),
-  validateRequest(UserValidations.changeUserStatusValidationSchema),
-  UserControllers.changeStatus,
-);
+// router.post(
+//   "/change-status/:id",
+//   auth("admin"),
+//   validateRequest(UserValidations.changeUserStatusValidationSchema),
+//   UserControllers.changeStatus,
+// );
 
 router.get(
   "/me",

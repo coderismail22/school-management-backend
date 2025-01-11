@@ -7,7 +7,7 @@ import { IUser } from "./user.interface";
 import { User } from "./user.model";
 import { Admin } from "../admin/admin.model";
 import { TAdmin } from "../admin/admin.interface";
-import { IStudent } from "../student/student.interface";
+// import { IStudent } from "../student/student.interface";
 import { ITeacher } from "../teacher/teacher.interface";
 import { Teacher } from "../teacher/teacher.model";
 
@@ -152,45 +152,45 @@ const updateTeacherInDB = async (teacherId: string, payload: any) => {
   }
 };
 
-const createStudentInDB = async (payload: IStudent) => {
-  // create a user object
-  const userData: Partial<IUser> = {};
-  userData.name = payload.name;
-  userData.role = "student";
-  userData.email = payload.email;
-  userData.password = payload.password;
+// const createStudentInDB = async (payload: IStudent) => {
+//   // create a user object
+//   const userData: Partial<IUser> = {};
+//   userData.name = payload.name;
+//   userData.role = "student";
+//   userData.email = payload?.email;
+//   userData.password = payload?.password;
 
-  const session = await mongoose.startSession();
+//   const session = await mongoose.startSession();
 
-  try {
-    session.startTransaction();
-    //TODO: Generate Dynamic ID
-    //TODO: Upload image to Cloudinary using Multer
+//   try {
+//     session.startTransaction();
+//     //TODO: Generate Dynamic ID
+//     //TODO: Upload image to Cloudinary using Multer
 
-    // create a user (transaction-1)
-    const newUser = await User.create([userData], { session });
+//     // create a user (transaction-1)
+//     const newUser = await User.create([userData], { session });
 
-    if (!newUser.length) {
-      throw new AppError(httpStatus.BAD_REQUEST, "Failed to create user");
-    }
+//     if (!newUser.length) {
+//       throw new AppError(httpStatus.BAD_REQUEST, "Failed to create user");
+//     }
 
-    // create a student (transaction-2)
-    const newStudent = await Student.create([payload], { session });
+//     // create a student (transaction-2)
+//     const newStudent = await Student.create([payload], { session });
 
-    if (!newStudent.length) {
-      throw new AppError(httpStatus.BAD_REQUEST, "Failed to create student");
-    }
+//     if (!newStudent.length) {
+//       throw new AppError(httpStatus.BAD_REQUEST, "Failed to create student");
+//     }
 
-    await session.commitTransaction();
-    await session.endSession();
+//     await session.commitTransaction();
+//     await session.endSession();
 
-    return newStudent;
-  } catch (err: any) {
-    await session.abortTransaction();
-    await session.endSession();
-    throw err;
-  }
-};
+//     return newStudent;
+//   } catch (err: any) {
+//     await session.abortTransaction();
+//     await session.endSession();
+//     throw err;
+//   }
+// };
 
 const createAdminInDB = async (payload: TAdmin) => {
   // create a user object
@@ -279,7 +279,7 @@ const changeStatusInDB = async (id: string, status: string) => {
 export const UserServices = {
   createTeacherInDB,
   updateTeacherInDB,
-  createStudentInDB,
+  // createStudentInDB,
   createAdminInDB,
   getMeFromDB,
   changeStatusInDB,

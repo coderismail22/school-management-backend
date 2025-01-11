@@ -24,26 +24,26 @@ const updateTeacher = catchAsync(async (req, res) => {
   });
 });
 
-const createStudent = catchAsync(async (req, res) => {
-  const result = await UserServices.createStudentIntoDB(req.body);
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Student is created successfully",
-    data: result,
-  });
-});
+// const createStudent = catchAsync(async (req, res) => {
+//   const result = await UserServices.createStudentIntoDB(req.body);
+//   sendResponse(res, {
+//     statusCode: httpStatus.OK,
+//     success: true,
+//     message: "Student is created successfully",
+//     data: result,
+//   });
+// });
 
-const createAdmin = catchAsync(async (req, res) => {
-  const result = await UserServices.createAdminIntoDB(req.body);
+// const createAdmin = catchAsync(async (req, res) => {
+//   const result = await UserServices.createAdminIntoDB(req.body);
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Admin is created successfully",
-    data: result,
-  });
-});
+//   sendResponse(res, {
+//     statusCode: httpStatus.OK,
+//     success: true,
+//     message: "Admin is created successfully",
+//     data: result,
+//   });
+// });
 
 const getMe = catchAsync(async (req, res) => {
   const user = req?.user;
@@ -58,24 +58,24 @@ const getMe = catchAsync(async (req, res) => {
   });
 });
 
-const changeStatus = catchAsync(async (req, res) => {
-  const id = req.params.id;
-  const { status } = req.body;
-  const result = await UserServices.changeStatusIntoDB(id, status);
+// const changeStatus = catchAsync(async (req, res) => {
+//   const id = req.params.id;
+//   const { status } = req.body;
+//   const result = await UserServices.changeStatusIntoDB(id, status);
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Status changed successfully",
-    data: result,
-  });
-});
+//   sendResponse(res, {
+//     statusCode: httpStatus.OK,
+//     success: true,
+//     message: "Status changed successfully",
+//     data: result,
+//   });
+// });
 
 export const UserControllers = {
   createTeacher,
   updateTeacher,
-  createStudent,
-  createAdmin,
+  // createStudent,
+  // createAdmin,
   getMe,
-  changeStatus,
+  // changeStatus,
 };
