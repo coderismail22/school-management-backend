@@ -37,7 +37,7 @@ const getAllStudents = catchAsync(async (req: Request, res: Response) => {
 const updateStudent = catchAsync(async (req: Request, res: Response) => {
   const result = await StudentServices.updateStudentInDB(
     req.params.studentId,
-    req.body
+    req.body,
   );
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -48,7 +48,9 @@ const updateStudent = catchAsync(async (req: Request, res: Response) => {
 });
 
 const deleteStudent = catchAsync(async (req: Request, res: Response) => {
-  const result = await StudentServices.deleteStudentFromDB(req.params.studentId);
+  const result = await StudentServices.deleteStudentFromDB(
+    req.params.studentId,
+  );
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -57,10 +59,89 @@ const deleteStudent = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getDistinctYears = catchAsync(async (req: Request, res: Response) => {
+  const result = await StudentServices.getDistinctYearsFromDB();
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Years fetched successfully",
+    data: result,
+  });
+});
+
+const getDistinctVersions = catchAsync(async (req: Request, res: Response) => {
+  const { year } = req.params;
+  const result = await StudentServices.getDistinctVersionsFromDB(year);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Versions fetched successfully",
+    data: result,
+  });
+});
+
+const getDistinctClasses = catchAsync(async (req: Request, res: Response) => {
+  const { year, version } = req.params;
+  const result = await StudentServices.getDistinctClassesFromDB(year, version);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Classes fetched successfully",
+    data: result,
+  });
+});
+
+const getDistinctSections = catchAsync(async (req: Request, res: Response) => {
+  const { year, version, class: className } = req.params;
+  const result = await StudentServices.getDistinctSectionsFromDB(
+    year,
+    version,
+    className,
+  );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Sections fetched successfully",
+    data: result,
+  });
+});
+
+const filterStudents = catchAsync(async (req: Request, res: Response) => {
+  const filters = req.query;
+  const result = await StudentServices.filterStudentsFromDB(filters);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Filtered students fetched successfully",
+    data: result,
+  });
+});
+
+const getDistinctGroups = catchAsync(async (req: Request, res: Response) => {
+  const { year, version, class: className } = req.params;
+  const result = await StudentServices.getDistinctGroupsFromDB(
+    year,
+    version,
+    className,
+  );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Groups fetched successfully",
+    data: result,
+  });
+});
 export const StudentControllers = {
   createStudent,
   getStudent,
   getAllStudents,
   updateStudent,
   deleteStudent,
+  filterStudents,
+  getDistinctClasses,
+  getDistinctSections,
+  getDistinctVersions,
+  getDistinctYears,
+  getDistinctGroups,
 };

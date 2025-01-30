@@ -11,6 +11,13 @@ router.post(
   StudentControllers.createStudent
 );
 
+router.get("/filter", StudentControllers.filterStudents); 
+router.get("/years", StudentControllers.getDistinctYears); 
+router.get("/versions/:year", StudentControllers.getDistinctVersions);
+router.get("/classes/:year/:version", StudentControllers.getDistinctClasses);
+router.get("/sections/:year/:version/:class", StudentControllers.getDistinctSections);
+router.get("/groups/:year/:version/:class", StudentControllers.getDistinctGroups);
+
 router.get("/:studentId", StudentControllers.getStudent);
 router.get("/", StudentControllers.getAllStudents);
 

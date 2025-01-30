@@ -3,8 +3,6 @@ import validateRequest from "../../middlewares/validateRequest";
 import { StudentValidations } from "./../student/student.validation";
 import { UserControllers } from "./user.controller";
 import auth from "../../middlewares/auth";
-import { UserValidations } from "./user.validation";
-import { AdminValidations } from "../admin/admin.validation";
 import { USER_ROLE } from "./user.constant";
 import { TeacherValidations } from "../teacher/teacher.validation";
 
@@ -27,12 +25,20 @@ router.patch(
 );
 
 // create student
-// router.post(
-//   "/create-student",
-//   // auth(USER_ROLE.superAdmin, USER_ROLE.admin), //TODO: Add a auth role
-//   validateRequest(StudentValidations.createStudentValidationSchema),
-//   UserControllers.createStudent,
-// );
+router.post(
+  "/register-student",
+  // auth(USER_ROLE.superAdmin, USER_ROLE.admin), //TODO: Add a auth role
+  validateRequest(StudentValidations.createStudentValidationSchema),
+  UserControllers.createStudent,
+);
+
+// update student
+router.patch(
+  "/update-student/:studentId",
+  // auth(USER_ROLE.superAdmin, USER_ROLE.admin), //TODO: Add a auth role
+  validateRequest(StudentValidations.updateStudentValidationSchema),
+  UserControllers.updateStudent,
+);
 
 // router.post(
 //   "/create-admin",

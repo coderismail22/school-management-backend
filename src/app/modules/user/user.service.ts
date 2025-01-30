@@ -10,6 +10,7 @@ import { TAdmin } from "../admin/admin.interface";
 // import { IStudent } from "../student/student.interface";
 import { ITeacher } from "../teacher/teacher.interface";
 import { Teacher } from "../teacher/teacher.model";
+import { IStudent } from "../student/student.interface";
 
 const createTeacherInDB = async (payload: ITeacher) => {
   // create a user object
@@ -33,7 +34,7 @@ const createTeacherInDB = async (payload: ITeacher) => {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to create user");
     }
 
-    // create a student (transaction-2)
+    // create a teacher (transaction-2)
     const newStudent = await Teacher.create([payload], { session });
 
     if (!newStudent.length) {
@@ -152,45 +153,148 @@ const updateTeacherInDB = async (teacherId: string, payload: any) => {
   }
 };
 
-// const createStudentInDB = async (payload: IStudent) => {
-//   // create a user object
-//   const userData: Partial<IUser> = {};
-//   userData.name = payload.name;
-//   userData.role = "student";
-//   userData.email = payload?.email;
-//   userData.password = payload?.password;
+const createStudentInDB = async (payload: IStudent) => {
+  // Create a user object
+  const userData: Partial<IUser> = {};
+  userData.name = payload.name;
+  userData.role = "student";
+  userData.email = payload.email;
+  userData.password = payload.password;
 
-//   const session = await mongoose.startSession();
+  const session = await mongoose.startSession();
 
-//   try {
-//     session.startTransaction();
-//     //TODO: Generate Dynamic ID
-//     //TODO: Upload image to Cloudinary using Multer
+  try {
+    session.startTransaction();
 
-//     // create a user (transaction-1)
-//     const newUser = await User.create([userData], { session });
+    // TODO: Generate Dynamic ID
+    // TODO: Upload image to Cloudinary using Multer
 
-//     if (!newUser.length) {
-//       throw new AppError(httpStatus.BAD_REQUEST, "Failed to create user");
-//     }
+    // Create a user (transaction-1)
+    const newUser = await User.create([userData], { session });
+    if (!newUser.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, "Failed to create user");
+    }
 
-//     // create a student (transaction-2)
-//     const newStudent = await Student.create([payload], { session });
+    // Create a student (transaction-2)
+    const newStudent = await Student.create([payload], { session });
 
-//     if (!newStudent.length) {
-//       throw new AppError(httpStatus.BAD_REQUEST, "Failed to create student");
-//     }
+    if (!newStudent.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, "Failed to create student");
+    }
 
-//     await session.commitTransaction();
-//     await session.endSession();
+    await session.commitTransaction();
+    await session.endSession();
 
-//     return newStudent;
-//   } catch (err: any) {
-//     await session.abortTransaction();
-//     await session.endSession();
-//     throw err;
-//   }
-// };
+    return newStudent;
+  } catch (err: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw err;
+  }
+};
+
+const updateStudentInDB = async (studentId: string, payload: any) => {
+  const { ...updates } = payload;
+  console.log("service updates", { ...updates });
+
+  if (!studentId) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Student ID is required");
+  }
+
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    // Define which fields belong to the User model
+    const userFields: Array<keyof IUser> = ["name", "email", "password"];
+
+    // Define which fields belong to the Student model
+    const studentFields: Array<keyof IStudent> = [
+      "name",
+      "email",
+      "password",
+      "profileImg",
+      "address",
+      "phone",
+      "bloodGroup",
+      "year",
+      "version",
+      "shift",
+      "class",
+      "section",
+      "group",
+    ];
+
+    // Separate updates for User and Student
+    const userUpdates: Partial<IUser> = {};
+    const studentUpdates: Partial<IStudent> = {};
+
+    Object.keys(updates).forEach((key) => {
+      if (userFields.includes(key as keyof IUser)) {
+        userUpdates[key as keyof IUser] = updates[key];
+      }
+      if (studentFields.includes(key as keyof IStudent)) {
+        studentUpdates[key as keyof IStudent] = updates[key];
+      }
+    });
+
+    if (
+      Object.keys(userUpdates).length === 0 &&
+      Object.keys(studentUpdates).length === 0
+    ) {
+      throw new AppError(httpStatus.BAD_REQUEST, "No valid fields to update");
+    }
+
+    // Find the student document by ID
+    const student = await Student.findById(studentId).session(session);
+    if (!student) {
+      throw new AppError(httpStatus.NOT_FOUND, "Student not found");
+    }
+
+    // Preserve the original email before updates
+    const originalEmail = student.email;
+
+    // Find the related user document by email or user ID from the student document
+    const user = await User.findOne({ email: originalEmail }).session(session);
+    if (!user) {
+      throw new AppError(httpStatus.NOT_FOUND, "Associated user not found");
+    }
+
+    // Update the student details
+    if (Object.keys(studentUpdates).length > 0) {
+      const updatedStudent = await Student.findByIdAndUpdate(
+        studentId,
+        { $set: studentUpdates },
+        { new: true, session },
+      );
+      if (!updatedStudent) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Failed to update student");
+      }
+    }
+
+    // Update the user details
+    if (Object.keys(userUpdates).length > 0) {
+      const updatedUser = await User.findByIdAndUpdate(
+        user._id,
+        { $set: userUpdates },
+        { new: true, session },
+      );
+      if (!updatedUser) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Failed to update user");
+      }
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return { user, student };
+  } catch (err: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw err;
+  }
+};
 
 const createAdminInDB = async (payload: TAdmin) => {
   // create a user object
@@ -279,7 +383,8 @@ const changeStatusInDB = async (id: string, status: string) => {
 export const UserServices = {
   createTeacherInDB,
   updateTeacherInDB,
-  // createStudentInDB,
+  createStudentInDB,
+  updateStudentInDB,
   createAdminInDB,
   getMeFromDB,
   changeStatusInDB,

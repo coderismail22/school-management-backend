@@ -24,15 +24,28 @@ const updateTeacher = catchAsync(async (req, res) => {
   });
 });
 
-// const createStudent = catchAsync(async (req, res) => {
-//   const result = await UserServices.createStudentIntoDB(req.body);
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: "Student is created successfully",
-//     data: result,
-//   });
-// });
+const createStudent = catchAsync(async (req, res) => {
+  const result = await UserServices.createStudentInDB(req.body);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Student is created successfully",
+    data: result,
+  });
+});
+
+const updateStudent = catchAsync(async (req, res) => {
+  const studentId = req.params.studentId;
+  console.log("controller", studentId);
+  console.log("controller", req.body);
+  const result = await UserServices.updateStudentInDB(studentId, req.body);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Student is updated successfully",
+    data: result,
+  });
+});
 
 // const createAdmin = catchAsync(async (req, res) => {
 //   const result = await UserServices.createAdminIntoDB(req.body);
@@ -74,7 +87,8 @@ const getMe = catchAsync(async (req, res) => {
 export const UserControllers = {
   createTeacher,
   updateTeacher,
-  // createStudent,
+  createStudent,
+  updateStudent,
   // createAdmin,
   getMe,
   // changeStatus,
