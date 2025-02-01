@@ -4,6 +4,7 @@ const createStudentValidationSchema = z.object({
   body: z.object({
     name: z.string().min(1, "Name is required"),
     studentId: z.string().min(1, "Student ID is required"),
+    roll: z.string().min(1, "Student Roll is required"),
     profileImg: z.string().url("Invalid profile image URL").optional(),
     email: z.string().email("Invalid email"),
     password: z.string().min(6, "Password must be at least 6 characters"),
@@ -24,6 +25,7 @@ const updateStudentValidationSchema = z.object({
   body: z.object({
     name: z.string().optional(),
     studentId: z.string().optional(),
+    roll: z.string().optional(),
     profileImg: z.string().url("Invalid profile image URL").optional(),
     email: z.string().email("Invalid email").optional(),
     password: z

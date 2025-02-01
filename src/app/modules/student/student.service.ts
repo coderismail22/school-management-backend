@@ -22,6 +22,7 @@ const updateStudentInDB = async (
   studentId: string,
   payload: Partial<IStudent>,
 ) => {
+  console.log('payloaddddd',payload)
   const updatedStudent = await Student.findByIdAndUpdate(studentId, payload, {
     new: true,
     runValidators: true,

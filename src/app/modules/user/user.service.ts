@@ -212,6 +212,7 @@ const updateStudentInDB = async (studentId: string, payload: any) => {
     // Define which fields belong to the Student model
     const studentFields: Array<keyof IStudent> = [
       "name",
+      "roll",
       "email",
       "password",
       "profileImg",

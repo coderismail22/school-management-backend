@@ -5,6 +5,7 @@ const StudentSchema = new Schema<IStudent>(
   {
     name: { type: String, required: true },
     studentId: { type: String, required: true, unique: true },
+    roll: { type: String, required: true },
     profileImg: { type: String }, // Optional profile image URL
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },

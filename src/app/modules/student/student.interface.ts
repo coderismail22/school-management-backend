@@ -2,6 +2,7 @@ export interface IStudent {
   _id?: string;
   name: string;
   studentId: string;
+  roll: string;
   profileImg?: string;
   email: string;
   password: string;
