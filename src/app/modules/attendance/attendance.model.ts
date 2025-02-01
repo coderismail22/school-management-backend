@@ -1,24 +1,51 @@
+// src/modules/attendance/attendance.model.ts
 import { Schema, model } from "mongoose";
 import { IAttendance } from "./attendance.interface";
 
 const AttendanceSchema = new Schema<IAttendance>(
   {
-    date: { type: String, required: true },
-    studentId: { type: String, required: true },
-    classLevel: { type: Number, required: true },
-    section: { type: String, required: true },
-    subjectId: { type: String, required: true },
-    status: {
-      type: String,
-      enum: ["Present", "Absent", "Late"],
+    student: {
+      type: Schema.Types.ObjectId,
+      ref: "Student",
       required: true,
     },
-    recordedBy: { type: String, required: true },
+    date: {
+      type: Date,
+      required: true,
+    },
+    year: {
+      type: String,
+      required: true,
+    },
+    version: {
+      type: String,
+      required: true,
+    },
+    shift: {
+      type: String,
+      required: true,
+    },
+    class: {
+      type: String,
+      required: true,
+    },
+    section: {
+      type: String,
+      required: true,
+    },
+    group: {
+      type: String,
+      enum: ["Science", "Arts", "Commerce", "NA"],
+    },
+    status: {
+      type: String,
+      enum: ["present", "absent", "late", "leave"],
+      default: "present",
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  },
 );
 
-export const AttendanceModel = model<IAttendance>(
-  "Attendance",
-  AttendanceSchema
-);
+export const Attendance = model<IAttendance>("Attendance", AttendanceSchema);

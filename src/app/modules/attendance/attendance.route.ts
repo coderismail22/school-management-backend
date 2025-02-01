@@ -1,25 +1,23 @@
+// src/modules/attendance/attendance.route.ts
 import { Router } from "express";
+// import validateRequest from "../../middlewares/validateRequest";
 import { AttendanceControllers } from "./attendance.controller";
-import { AttendanceValidations } from "./attendance.validation";
-import validateRequest from "../../middlewares/validateRequest";
+// import { AttendanceValidations } from "./attendance.validation";
 
 const router = Router();
 
-router.post(
-  "/create-attendance",
-  validateRequest(AttendanceValidations.createAttendanceSchema),
-  AttendanceControllers.createAttendance
+// GET /api/v1/attendance?year=...&version=...&class=...&section=...&shift=...&date=...
+router.get(
+  "/",
+  // validateRequest(AttendanceValidations.loadAttendanceValidationSchema),
+  AttendanceControllers.loadAttendance,
 );
 
-router.get("/:attendanceId", AttendanceControllers.getAttendance);
-router.get("/", AttendanceControllers.getAllAttendances);
-
+// PATCH /api/v1/attendance
 router.patch(
-  "/update-attendance/:attendanceId",
-  validateRequest(AttendanceValidations.updateAttendanceSchema),
-  AttendanceControllers.updateAttendance
+  "/",
+  // validateRequest(AttendanceValidations.updateAttendanceValidationSchema),
+  AttendanceControllers.updateAttendance,
 );
-
-router.delete("/:attendanceId", AttendanceControllers.deleteAttendance);
 
 export const AttendanceRoutes = router;

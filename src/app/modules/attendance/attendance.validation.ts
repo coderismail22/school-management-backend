@@ -1,27 +1,35 @@
+// src/modules/attendance/attendance.validation.ts
 import { z } from "zod";
 
-export const AttendanceValidations = {
-  createAttendanceSchema: z.object({
-    body: z.object({
-      date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
-      studentId: z.string().min(1, "Student ID is required"),
-      classLevel: z.number().min(1).max(12, "Class level must be between 1-12"),
-      section: z.string().min(1, "Section is required"),
-      subjectId: z.string().min(1, "Subject ID is required"),
-      status: z.enum(["Present", "Absent", "Late"]),
-      recordedBy: z.string().min(1, "Teacher ID is required"),
-    }),
+const loadAttendanceValidationSchema = z.object({
+  query: z.object({
+    year: z.string().min(1),
+    version: z.string().min(1),
+    class: z.string().min(1),
+    section: z.string().min(1),
+    shift: z.string().min(1),
+    date: z.string().min(1), // We'll parse to Date
   }),
+});
 
-  updateAttendanceSchema: z.object({
-    body: z.object({
-      date: z.string().optional(),
-      studentId: z.string().optional(),
-      classLevel: z.number().optional(),
-      section: z.string().optional(),
-      subjectId: z.string().optional(),
-      status: z.enum(["Present", "Absent", "Late"]).optional(),
-      recordedBy: z.string().optional(),
+const updateAttendanceValidationSchema = z.object({
+  // We'll receive an array of objects
+  body: z.array(
+    z.object({
+      // We expect "student" to be the student's _id (string)
+      student: z.string().min(1),
+      date: z.string().min(1),
+      year: z.string().min(1),
+      version: z.string().min(1),
+      shift: z.string().min(1),
+      class: z.string().min(1),
+      section: z.string().min(1),
+      status: z.enum(["present", "absent", "late", "leave"]),
     }),
-  }),
+  ),
+});
+
+export const AttendanceValidations = {
+  loadAttendanceValidationSchema,
+  updateAttendanceValidationSchema,
 };

@@ -1,12 +1,18 @@
+// src/modules/attendance/attendance.interface.ts
+import { Types } from "mongoose";
+
+export type AttendanceStatus = "present" | "absent" | "late" | "leave";
+
 export interface IAttendance {
-  _id?: string;
-  date: string; // YYYY-MM-DD
-  studentId: string;
-  classLevel: number;
+  _id?: Types.ObjectId;
+  student: Types.ObjectId; // reference to the Student doc
+
+  date: Date;
+  year: string;
+  version: string;
+  shift: string;
+  class: string;
   section: string;
-  subjectId: string;
-  status: "Present" | "Absent" | "Late";
-  recordedBy: string; // Teacher ID
-  createdAt?: Date;
-  updatedAt?: Date;
+  status: AttendanceStatus;
+  group: "Science" | "Commerce" | "Arts" | "NA";
 }

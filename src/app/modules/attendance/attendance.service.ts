@@ -1,50 +1,126 @@
-import { AttendanceModel } from "./attendance.model";
+// src/modules/attendance/attendance.service.ts
+import { Attendance } from "./attendance.model";
 import { IAttendance } from "./attendance.interface";
-import httpStatus from "http-status";
-import AppError from "../../errors/AppError";
+import { Student } from "../student/student.model";
 
-const createAttendanceInDB = async (payload: IAttendance) => {
-  return await AttendanceModel.create(payload);
-};
+// 1) Update the interface to include `group`.
+interface ILoadFilters {
+  year: string;
+  version: string;
+  class: string;
+  section: string;
+  shift: string;
+  date: string;
+  group: string; // new
+}
 
-const getAttendanceFromDB = async (attendanceId: string) => {
-  const attendance = await AttendanceModel.findById(attendanceId);
-  if (!attendance)
-    throw new AppError(httpStatus.NOT_FOUND, "Attendance not found");
-  return attendance;
-};
+const loadAttendanceFromDB = async (filters: ILoadFilters) => {
+  const {
+    year,
+    version,
+    class: className,
+    section,
+    shift,
+    date,
+    group,
+  } = filters;
+  const dateObj = new Date(date);
 
-const getAllAttendancesFromDB = async () => {
-  return await AttendanceModel.find();
-};
+  // 1) Find existing attendance for that day + group
+  const existingAttendance = await Attendance.find({
+    year,
+    version,
+    class: className,
+    section,
+    shift,
+    group, // include group in the query
+    date: dateObj,
+  }).populate("student");
 
-const updateAttendanceInDB = async (
-  attendanceId: string,
-  payload: Partial<IAttendance>
-) => {
-  const updatedAttendance = await AttendanceModel.findByIdAndUpdate(
-    attendanceId,
-    payload,
-    { new: true, runValidators: true }
+  // 2) Get all students in that class + group
+  //    If you only want to filter by group if it's not "NA", you could do conditional logic.
+  //    But here we assume group is always used:
+  const students = await Student.find({
+    year,
+    version,
+    shift,
+    class: className,
+    section,
+    group, // also filter by group
+  });
+
+  // 3) Find which students already have attendance
+  const existingStudentIds = existingAttendance.map((a) =>
+    a.student._id.toString(),
   );
-  if (!updatedAttendance)
-    throw new AppError(httpStatus.NOT_FOUND, "Attendance not found");
-  return updatedAttendance;
+
+  // 4) Missing students = not in existingStudentIds
+  const missingStudents = students.filter(
+    (st) => !existingStudentIds.includes(st._id.toString()),
+  );
+
+  // 5) Build new default records
+  const missingTransformed = missingStudents.map((st) => ({
+    student: st._id,
+    date: dateObj,
+    year,
+    version,
+    shift,
+    class: className,
+    section,
+    group, // attach group to the new attendance record
+    status: "present",
+    studentDoc: st, // for frontend
+  }));
+
+  // 6) Transform existing docs so `student` becomes just the ID + attach `studentDoc`
+  const existingTransformed = existingAttendance.map((doc) => {
+    const raw = doc.toObject();
+    const studentObj = raw.student; // the populated doc
+    return {
+      ...raw,
+      student: studentObj._id,
+      studentDoc: studentObj,
+    };
+  });
+
+  // 7) Combine them
+  const combined = [...existingTransformed, ...missingTransformed];
+  return combined;
 };
 
-const deleteAttendanceFromDB = async (attendanceId: string) => {
-  const deletedAttendance = await AttendanceModel.findByIdAndDelete(
-    attendanceId
-  );
-  if (!deletedAttendance)
-    throw new AppError(httpStatus.NOT_FOUND, "Attendance not found");
-  return deletedAttendance;
+const updateAttendanceInDB = async (attendances: IAttendance[]) => {
+  const results = [];
+
+  for (const att of attendances) {
+    // 1) Build a filter that includes group
+    const filter = {
+      student: att.student,
+      date: new Date(att.date),
+      year: att.year,
+      version: att.version,
+      shift: att.shift,
+      class: att.class,
+      section: att.section,
+      group: att.group, // newly included so we upsert by group
+    };
+
+    // 2) The only field we update is status (or you can update group if needed)
+    const update = { status: att.status };
+
+    // 3) Upsert
+    const updated = await Attendance.findOneAndUpdate(filter, update, {
+      upsert: true,
+      new: true,
+    }).populate("student");
+
+    results.push(updated);
+  }
+
+  return results;
 };
 
 export const AttendanceServices = {
-  createAttendanceInDB,
-  getAttendanceFromDB,
-  getAllAttendancesFromDB,
+  loadAttendanceFromDB,
   updateAttendanceInDB,
-  deleteAttendanceFromDB,
 };

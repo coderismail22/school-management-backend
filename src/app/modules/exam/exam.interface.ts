@@ -16,3 +16,4 @@ export interface IExamSubject {
   practicalMarks?: number;
   totalMarks: number;
 }
+

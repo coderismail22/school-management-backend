@@ -1,70 +1,48 @@
+// src/modules/attendance/attendance.controller.ts
 import { Request, Response } from "express";
-import catchAsync from "../../utils/catchAsync";
-import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
 import { AttendanceServices } from "./attendance.service";
+import catchAsync from "../../utils/catchAsync";
+import sendResponse from "../../utils/sendResponse";
 
-const createAttendance = catchAsync(async (req: Request, res: Response) => {
-  const attendance = await AttendanceServices.createAttendanceInDB(req.body);
-  sendResponse(res, {
-    statusCode: httpStatus.CREATED,
-    success: true,
-    message: "Attendance recorded successfully",
-    data: attendance,
+const loadAttendance = catchAsync(async (req: Request, res: Response) => {
+  // Extract 'group' as well
+  const { year, version, class: className, section, shift, date, group } = req.query;
+
+  const result = await AttendanceServices.loadAttendanceFromDB({
+    year: year as string,
+    version: version as string,
+    class: className as string,
+    section: section as string,
+    shift: shift as string,
+    date: date as string,
+    group: group as string, // new field
   });
-});
 
-const getAttendance = catchAsync(async (req: Request, res: Response) => {
-  const attendance = await AttendanceServices.getAttendanceFromDB(
-    req.params.attendanceId
-  );
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Attendance fetched successfully",
-    data: attendance,
-  });
-});
-
-const getAllAttendances = catchAsync(async (req: Request, res: Response) => {
-  const attendances = await AttendanceServices.getAllAttendancesFromDB();
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "All attendances fetched successfully",
-    data: attendances,
+    message: "Attendance loaded successfully",
+    data: result,
   });
 });
 
 const updateAttendance = catchAsync(async (req: Request, res: Response) => {
-  const attendance = await AttendanceServices.updateAttendanceInDB(
-    req.params.attendanceId,
-    req.body
-  );
+  console.log("hit");
+
+  // The body is an array of attendance objects, each presumably with group
+  const attendances = req.body;
+  const result = await AttendanceServices.updateAttendanceInDB(attendances);
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "Attendance updated successfully",
-    data: attendance,
-  });
-});
-
-const deleteAttendance = catchAsync(async (req: Request, res: Response) => {
-  const attendance = await AttendanceServices.deleteAttendanceFromDB(
-    req.params.attendanceId
-  );
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Attendance deleted successfully",
-    data: attendance,
+    data: result,
   });
 });
 
 export const AttendanceControllers = {
-  createAttendance,
-  getAttendance,
-  getAllAttendances,
+  loadAttendance,
   updateAttendance,
-  deleteAttendance,
 };
