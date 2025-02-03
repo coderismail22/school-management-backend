@@ -41,6 +41,30 @@ const getRegistrations = async (filters: any): Promise<IExamRegistration[]> => {
   return registrations;
 };
 
+const getRegistration = async (
+  filters: any,
+): Promise<IExamRegistration | null> => {
+  const query: FilterQuery<IExamRegistration> = {};
+
+  if (filters.registrationId) {
+    query._id = new Types.ObjectId(filters.registrationId);
+  }
+
+  if (filters.examId) {
+    query.examId = new Types.ObjectId(filters.examId);
+  }
+
+  if (filters.studentId) {
+    query.studentId = new Types.ObjectId(filters.studentId);
+  }
+
+
+  const registration = await ExamRegistration.findOne(query)
+    .populate("examId")
+    .populate("studentId");
+  return registration;
+};
+
 const deleteRegistration = async (
   registrationId: string,
 ): Promise<IExamRegistration> => {
@@ -54,5 +78,6 @@ const deleteRegistration = async (
 export const ExamRegistrationServices = {
   bulkRegister,
   getRegistrations,
+  getRegistration,
   deleteRegistration,
 };

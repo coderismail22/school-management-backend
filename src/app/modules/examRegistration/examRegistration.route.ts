@@ -13,11 +13,18 @@ router.post(
   ExamRegistrationControllers.bulkRegisterStudents,
 );
 
-// Query registrations (by examId or studentId)
+// Query registrations multiple document output (by examId or studentId)
 router.get(
   "/",
-  validateRequest(ExamRegistrationValidation.getRegistrationsValidationSchema),
+  // validateRequest(ExamRegistrationValidation.getRegistrationsValidationSchema),
   ExamRegistrationControllers.getRegistrations,
+);
+
+// Get a single document
+router.get(
+  "/get-registration",
+  // validateRequest(ExamRegistrationValidation.getRegistrationsValidationSchema),
+  ExamRegistrationControllers.getRegistration,
 );
 
 // Delete a specific registration
