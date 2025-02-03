@@ -9,19 +9,18 @@ import sendResponse from "../../utils/sendResponse";
 
 const bulkRegisterStudents = catchAsync(async (req: Request, res: Response) => {
   const { examId, studentIds } = req.body;
-  console.log("exam id", examId);
-  console.log("student ids", studentIds);
-  const result = await ExamRegistrationServices.bulkRegister(
-    examId,
-    studentIds,
-  );
+
+  // Call updated service function
+  const result = await ExamRegistrationServices.bulkRegisterWithExamUpdate(examId, studentIds);
+
   sendResponse<IExamRegistration[]>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Students registered successfullyyy",
+    message: "Students registered successfully",
     data: result,
   });
 });
+
 
 const getRegistrations = catchAsync(async (req: Request, res: Response) => {
   const filters = req.query;

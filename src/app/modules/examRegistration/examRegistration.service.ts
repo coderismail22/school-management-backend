@@ -2,27 +2,70 @@
 import { ExamRegistration } from "./examRegistration.model";
 import { IExamRegistration } from "./examRegistration.interface";
 import httpStatus from "http-status";
-import { Types, FilterQuery } from "mongoose";
+import mongoose, { Types, FilterQuery } from "mongoose";
 import AppError from "../../errors/AppError";
+import { Exam } from "../exam/exam.model";
 
-const bulkRegister = async (
+const bulkRegisterWithExamUpdate = async (
   examId: string,
   studentIds: string[],
 ): Promise<IExamRegistration[]> => {
-  // Convert strings to ObjectIds:
-  const examObjectId = new Types.ObjectId(examId);
-  const registrationsToInsert = studentIds.map((sid) => ({
-    examId: examObjectId,
-    studentId: new Types.ObjectId(sid),
-  }));
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-  // InsertMany in one shot
-  // If you have a unique index, duplicates will error out
-  // We can handle that with try/catch or "ordered: false"
-  const result = await ExamRegistration.insertMany(registrationsToInsert, {
-    ordered: false, // continue on duplicate errors (optional)
-  });
-  return result;
+  try {
+    const examObjectId = new Types.ObjectId(examId);
+
+    // Step 1: Check for existing registrations
+    const existingRegistrations = await ExamRegistration.find({
+      examId: examObjectId,
+      studentId: { $in: studentIds.map((id) => new Types.ObjectId(id)) },
+    });
+
+    // Filter out already registered student IDs
+    const alreadyRegisteredIds = existingRegistrations.map((reg) =>
+      reg.studentId.toString(),
+    );
+    const newStudentIds = studentIds.filter(
+      (id) => !alreadyRegisteredIds.includes(id),
+    );
+
+    // Step 2: Register new students if any
+    let registrations: IExamRegistration[] = [];
+    if (newStudentIds.length > 0) {
+      const registrationsToInsert = newStudentIds.map((sid) => ({
+        examId: examObjectId,
+        studentId: new Types.ObjectId(sid),
+      }));
+
+      registrations = await ExamRegistration.insertMany(registrationsToInsert, {
+        session,
+      });
+    }
+
+    // Step 3: Update the exam document with new student IDs
+    await Exam.findByIdAndUpdate(
+      examObjectId,
+      {
+        $addToSet: {
+          students: {
+            $each: newStudentIds.map((id) => new Types.ObjectId(id)),
+          },
+        },
+      },
+      { session },
+    );
+
+    // Step 4: Commit transaction
+    await session.commitTransaction();
+    session.endSession();
+
+    return registrations;
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw new AppError(500, "Failed to register students");
+  }
 };
 
 const getRegistrations = async (filters: any): Promise<IExamRegistration[]> => {
@@ -58,7 +101,6 @@ const getRegistration = async (
     query.studentId = new Types.ObjectId(filters.studentId);
   }
 
-
   const registration = await ExamRegistration.findOne(query)
     .populate("examId")
     .populate("studentId");
@@ -76,7 +118,7 @@ const deleteRegistration = async (
 };
 
 export const ExamRegistrationServices = {
-  bulkRegister,
+  bulkRegisterWithExamUpdate,
   getRegistrations,
   getRegistration,
   deleteRegistration,
