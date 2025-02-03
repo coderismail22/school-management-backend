@@ -15,7 +15,7 @@ export interface IStudent {
   shift: "Morning" | "Day" | "Evening";
   class: string;
   section: string;
-  group?: "Science" | "Commerce" | "Arts"; // Only for class 9-12
+  group?: "Science" | "Commerce" | "Arts" | "NA"; // Only for class 9-12
   createdAt?: Date;
   updatedAt?: Date;
 }

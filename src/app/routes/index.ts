@@ -9,6 +9,9 @@ import { EventRoutes } from "../modules/event/event.route";
 import { AdministrationRoutes } from "../modules/administration/administration.route";
 import { NoticeBannerRoutes } from "../modules/noticeBanner/noticeBanner.route";
 import { AttendanceRoutes } from "../modules/attendance/attendance.route";
+import { ExamRoutes } from "../modules/exam/exam.route";
+import { ExamRegistrationRoutes } from "../modules/examRegistration/examRegistration.route";
+import { ExamResultRoutes } from "../modules/examResult/examResult.route";
 
 const router = Router();
 
@@ -28,6 +31,18 @@ const moduleRoutes = [
   {
     path: "/subjects",
     route: SubjectRoutes,
+  },
+  {
+    path: "/exams",
+    route: ExamRoutes,
+  },
+  {
+    path: "/exam-registrations",
+    route: ExamRegistrationRoutes,
+  },
+  {
+    path: "/exam-results",
+    route: ExamResultRoutes,
   },
   {
     path: "/students",

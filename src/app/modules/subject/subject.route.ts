@@ -1,25 +1,27 @@
-import { Router } from "express";
-import { SubjectControllers } from "./subject.controller";
-import { SubjectValidations } from "./subject.validation";
+// src/app/modules/subject/subject.route.ts
+import express from "express";
 import validateRequest from "../../middlewares/validateRequest";
+import { SubjectValidations } from "./subject.validation";
+import { SubjectController } from "./subject.controller";
 
-const router = Router();
+const router = express.Router();
 
 router.post(
   "/create-subject",
   validateRequest(SubjectValidations.createSubjectValidationSchema),
-  SubjectControllers.createSubject
+  SubjectController.createSubject,
 );
 
-router.get("/:subjectId", SubjectControllers.getSubject);
-router.get("/", SubjectControllers.getAllSubjects);
+router.get("/:subjectId", SubjectController.getSubjectById);
 
 router.patch(
-  "/update-subject/:subjectId",
+  "/:subjectId",
   validateRequest(SubjectValidations.updateSubjectValidationSchema),
-  SubjectControllers.updateSubject
+  SubjectController.updateSubject,
 );
 
-router.delete("/:subjectId", SubjectControllers.deleteSubject);
+router.delete("/:subjectId", SubjectController.deleteSubject);
+
+router.get("/", SubjectController.getAllSubjects);
 
 export const SubjectRoutes = router;

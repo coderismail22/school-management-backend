@@ -1,21 +1,97 @@
+// src/app/modules/subject/subject.model.ts
 import { Schema, model } from "mongoose";
 import { ISubject } from "./subject.interface";
 
 const SubjectSchema = new Schema<ISubject>(
   {
-    name: { type: String, required: true },
-    subjectCode: { type: String, required: true, unique: true },
-    hasMCQ: { type: Boolean, default: false },
-    hasCQ: { type: Boolean, default: false },
-    hasPractical: { type: Boolean, default: false },
-    mcqMarks: { type: Number },
-    cqMarks: { type: Number },
-    practicalMarks: { type: Number },
-    totalMarks: { type: Number, required: true },
-    group: { type: String, enum: ["Science", "Commerce", "Arts"], required: false },
-    classLevel: { type: Number, required: true },
+    name: {
+      type: String,
+      required: true,
+    },
+    code: {
+      type: String,
+      required: true,
+      // unique: true,
+    },
+    year: {
+      type: String,
+      required: true,
+    },
+    version: {
+      type: String,
+      required: true,
+    },
+    class: {
+      type: String,
+      required: true,
+    },
+    shift: {
+      type: String,
+      enum: ["Morning", "Day", "Evening"],
+      required: true,
+    },
+    section: {
+      type: String,
+      required: true,
+    },
+    group: {
+      type: String,
+      enum: ["Science", "Commerce", "Arts", "NA"],
+      default: "NA",
+    },
+    hasPlainMark: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    hasMCQ: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    hasCQ: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    hasPractical: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    mcqMark: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    cqMark: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    practicalMark: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    plainMark: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    totalMark: {
+      type: Number,
+      required: true,
+    },
+    subjectTeacher: {
+      type: Schema.Types.ObjectId,
+      ref: "Teacher",
+      required: true,
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  },
 );
 
-export const SubjectModel = model<ISubject>("Subject", SubjectSchema);
+export const Subject = model<ISubject>("Subject", SubjectSchema);

@@ -1,25 +1,27 @@
-import { Router } from "express";
-import { ExamControllers } from "./exam.controller";
-import { ExamValidations } from "./exam.validation";
+// src/app/modules/exam/exam.route.ts
+import express from "express";
 import validateRequest from "../../middlewares/validateRequest";
+import { ExamValidation } from "./exam.validation";
+import { ExamController } from "./exam.controller";
 
-const router = Router();
+const router = express.Router();
 
 router.post(
   "/create-exam",
-  validateRequest(ExamValidations.createExamValidationSchema),
-  ExamControllers.createExam,
+  validateRequest(ExamValidation.createExamValidationSchema),
+  ExamController.createExam
 );
 
-router.get("/:examId", ExamControllers.getExam);
-router.get("/", ExamControllers.getAllExams);
+router.get("/", ExamController.getAllExams);
+
+router.get("/:examId", ExamController.getExamById);
 
 router.patch(
-  "/update-exam/:examId",
-  validateRequest(ExamValidations.updateExamValidationSchema),
-  ExamControllers.updateExam,
+  "/:examId",
+  validateRequest(ExamValidation.updateExamValidationSchema),
+  ExamController.updateExam
 );
 
-router.delete("/:examId", ExamControllers.deleteExam);
+router.delete("/:examId", ExamController.deleteExam);
 
 export const ExamRoutes = router;
