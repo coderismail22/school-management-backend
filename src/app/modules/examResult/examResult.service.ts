@@ -5,13 +5,20 @@ import { Types } from "mongoose";
 import httpStatus from "http-status";
 import AppError from "../../errors/AppError";
 import { Exam } from "../exam/exam.model";
+import { Subject } from "../subject/subject.model";
+import { validateMark } from "./examResult.util";
 
 const createOrUpdateExamResult = async (
   payload: IExamResult,
 ): Promise<IExamResult> => {
-  console.log("mark entry", payload);
-
-  const payloadTeacher = payload?.teacherId;
+  // TODO: Check if the teacher is allowed to update the subject
+  // const payloadTeacher = payload?.teacherId;
+  // if (payloadTeacher !== exam._id) {
+  //   throw new AppError(
+  //     httpStatus.FORBIDDEN,
+  //     "You are not allowed to entry marks for this subject.",
+  //   );
+  // }
   const payloadExamId = payload?.examId;
 
   // Find the exam document
@@ -19,15 +26,39 @@ const createOrUpdateExamResult = async (
   if (!exam) {
     throw new AppError(httpStatus.NOT_FOUND, "Exam not found");
   }
+  // Stop putting marks more than the maximum mark of the exam subject
+  // step 1: get the maximum mark of the subject
+  // step 2: check if the total mark of the student is greater than the maximum mark of the subject
+  // step 3: if the total mark of the student is greater than the maximum mark of the subject, throw an error
+  console.log("mark entry", payload);
   console.log("exam", exam);
-  // if (payloadTeacher !== exam._id) {
-  //   throw new AppError(
-  //     httpStatus.FORBIDDEN,
-  //     "You are not allowed to entry marks for this subject.",
-  //   );
-  // }
-  // We assume teacher has already been verified as correct for examSubjectId
-  // Possibly auto-calculate totalMark if needed:
+
+  const subject = await Subject.findOne({ _id: payload?.examSubjectId });
+
+  console.log("mcqMarkPayload", payload?.marks?.mcqMark);
+  console.log("mcqMarkOfActualSubject", subject?.mcqMark);
+
+  // console.log("mcqMark", subject?.mcqMark);
+  // console.log("cqMark", subject?.cqMark);
+  // console.log("practicalMark", subject?.practicalMark);
+  // console.log("plainMark", subject?.plainMark);
+  if (!subject) {
+    throw new AppError(httpStatus.NOT_FOUND, "Subject not found");
+  }
+
+  // Validate each mark
+  validateMark(payload?.marks?.mcqMark ?? 0, subject?.mcqMark ?? 0, "MCQ");
+  validateMark(payload?.marks?.cqMark ?? 0, subject?.cqMark ?? 0, "CQ");
+  validateMark(
+    payload?.marks?.practicalMark ?? 0,
+    subject?.practicalMark ?? 0,
+    "Practical",
+  );
+  validateMark(
+    payload?.marks?.plainMark ?? 0,
+    subject?.plainMark ?? 0,
+    "Plain",
+  );
   const {
     mcqMark = 0,
     cqMark = 0,
@@ -39,7 +70,7 @@ const createOrUpdateExamResult = async (
   // Upsert logic: If a record for (examId, examSubjectId, studentId) already exists, update it
   const filter = {
     examId: new Types.ObjectId(payload.examId),
-    examSubjectId: payload.examSubjectId,
+    examSubjectId: new Types.ObjectId(payload.examSubjectId),
     studentId: new Types.ObjectId(payload.studentId),
   };
 
@@ -59,6 +90,7 @@ const createOrUpdateExamResult = async (
       "Failed to create/update exam result",
     );
   }
+  console.log("result", result);
   return result;
 };
 
@@ -83,9 +115,12 @@ const getExamResults = async (query: any): Promise<IExamResult[]> => {
   if (query.teacherId)
     findQuery.teacherId = new Types.ObjectId(query.teacherId);
 
+  // console.log("find query", findQuery);
+
   const results = await ExamResult.find(findQuery)
     .populate("examId")
     .populate("studentId")
+    .populate("examSubjectId")
     .populate("teacherId");
   return results;
 };

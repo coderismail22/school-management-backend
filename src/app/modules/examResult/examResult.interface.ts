@@ -10,10 +10,10 @@ export interface IMarksBreakdown {
 }
 
 export interface IExamResult extends Document {
-  examId: Types.ObjectId;          // references Exam
-  examSubjectId: string;           // the _id of the subdocument in Exam.subjects
-  studentId: Types.ObjectId;       // references Student
-  teacherId: Types.ObjectId;       // references Teacher who entered the marks
+  examId: Types.ObjectId; // references Exam
+  examSubjectId: Types.ObjectId; // the _id of the subdocument in Exam.subjects
+  studentId: Types.ObjectId; // references Student
+  teacherId: Types.ObjectId; // references Teacher who entered the marks
   marks: IMarksBreakdown;
   createdAt?: Date;
   updatedAt?: Date;

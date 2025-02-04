@@ -18,7 +18,8 @@ const ExamResultSchema = new Schema<IExamResult>(
       required: true,
     },
     examSubjectId: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: "Subject",
       required: true,
     },
     studentId: {
@@ -38,10 +39,13 @@ const ExamResultSchema = new Schema<IExamResult>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Optionally create an index to ensure a student only has 1 result per subject:
-ExamResultSchema.index({ examId: 1, examSubjectId: 1, studentId: 1 }, { unique: true });
+ExamResultSchema.index(
+  { examId: 1, examSubjectId: 1, studentId: 1 },
+  { unique: true },
+);
 
 export const ExamResult = model<IExamResult>("ExamResult", ExamResultSchema);
