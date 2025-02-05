@@ -129,9 +129,10 @@ const getTeacherExams = async (filters: ExamFilters): Promise<IExam[]> => {
   if (filters.group) filterQuery.group = filters.group;
 
   // Fetch exams and populate subjects and their teachers
-  const exams = await Exam.find(filterQuery)
-    .populate("subjects.subjectTeacher")
-    // .populate("students");
+  const exams = await Exam.find(filterQuery).populate(
+    "subjects.subjectTeacher",
+  );
+  // .populate("students");
 
   // Filter exams based on teacher ID
   return exams.filter((exam) =>
