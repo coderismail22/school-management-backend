@@ -93,7 +93,7 @@ const getExamsForTeacher = catchAsync(async (req: Request, res: Response) => {
       data: [],
     });
   }
-
+console.log('teacher exam result',result)
   sendResponse<IExam[]>(res, {
     statusCode: httpStatus.OK,
     success: true,
