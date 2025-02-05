@@ -26,27 +26,18 @@ const createOrUpdateExamResult = async (
   if (!exam) {
     throw new AppError(httpStatus.NOT_FOUND, "Exam not found");
   }
-  // Stop putting marks more than the maximum mark of the exam subject
-  // step 1: get the maximum mark of the subject
-  // step 2: check if the total mark of the student is greater than the maximum mark of the subject
-  // step 3: if the total mark of the student is greater than the maximum mark of the subject, throw an error
-  console.log("mark entry", payload);
-  console.log("exam", exam);
 
+  // Find the subject document
   const subject = await Subject.findOne({ _id: payload?.examSubjectId });
 
-  console.log("mcqMarkPayload", payload?.marks?.mcqMark);
-  console.log("mcqMarkOfActualSubject", subject?.mcqMark);
-
-  // console.log("mcqMark", subject?.mcqMark);
-  // console.log("cqMark", subject?.cqMark);
-  // console.log("practicalMark", subject?.practicalMark);
-  // console.log("plainMark", subject?.plainMark);
   if (!subject) {
     throw new AppError(httpStatus.NOT_FOUND, "Subject not found");
   }
 
-  // Validate each mark
+  // console.log("mark entry", payload);
+  // console.log("exam", exam);
+
+  // Validate each type of mark (Less Than, Greater Than, Negative, Undefined, Null etc.)
   validateMark(payload?.marks?.mcqMark ?? 0, subject?.mcqMark ?? 0, "MCQ");
   validateMark(payload?.marks?.cqMark ?? 0, subject?.cqMark ?? 0, "CQ");
   validateMark(
@@ -90,7 +81,6 @@ const createOrUpdateExamResult = async (
       "Failed to create/update exam result",
     );
   }
-  console.log("result", result);
   return result;
 };
 

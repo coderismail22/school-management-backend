@@ -53,6 +53,7 @@ const deleteExam = catchAsync(async (req: Request, res: Response) => {
 
 const getAllExams = catchAsync(async (req: Request, res: Response) => {
   const filters = req.query;
+  console.log("controller filterQuery", filters);
   const result = await ExamServices.getAllExamsFromDB(filters);
   sendResponse<IExam[]>(res, {
     statusCode: httpStatus.OK,
@@ -62,10 +63,50 @@ const getAllExams = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const ExamController = {
+// Teacher only exams
+const getExamsForTeacher = catchAsync(async (req: Request, res: Response) => {
+  const {
+    year,
+    version,
+    class: className,
+    shift,
+    section,
+    group,
+    teacherId,
+  } = req.query;
+
+  const result = await ExamServices.getTeacherExams({
+    year,
+    version,
+    className,
+    shift,
+    section,
+    group,
+    teacherId,
+  });
+
+  if (result.length === 0) {
+    return sendResponse<IExam[]>(res, {
+      statusCode: httpStatus.NOT_FOUND,
+      success: false,
+      message: "No exams found for the given criteria",
+      data: [],
+    });
+  }
+
+  sendResponse<IExam[]>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Exams retrieved successfully",
+    data: result,
+  });
+});
+
+export const ExamControllers = {
   createExam,
   getExamById,
   updateExam,
   deleteExam,
   getAllExams,
+  getExamsForTeacher,
 };

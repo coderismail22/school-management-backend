@@ -2,26 +2,27 @@
 import express from "express";
 import validateRequest from "../../middlewares/validateRequest";
 import { ExamValidation } from "./exam.validation";
-import { ExamController } from "./exam.controller";
+import { ExamControllers } from "./exam.controller";
 
 const router = express.Router();
 
 router.post(
   "/create-exam",
   validateRequest(ExamValidation.createExamValidationSchema),
-  ExamController.createExam
+  ExamControllers.createExam,
 );
 
-router.get("/", ExamController.getAllExams);
+router.get("/", ExamControllers.getAllExams);
+router.get("/teacher-only-exams", ExamControllers.getExamsForTeacher);
 
-router.get("/:examId", ExamController.getExamById);
+router.get("/:examId", ExamControllers.getExamById);
 
 router.patch(
   "/:examId",
   validateRequest(ExamValidation.updateExamValidationSchema),
-  ExamController.updateExam
+  ExamControllers.updateExam,
 );
 
-router.delete("/:examId", ExamController.deleteExam);
+router.delete("/:examId", ExamControllers.deleteExam);
 
 export const ExamRoutes = router;
