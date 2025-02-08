@@ -7,6 +7,7 @@ import config from "../../config";
 
 // login controller
 const loginUser = catchAsync(async (req, res) => {
+  console.log(req.body);
   const result = await AuthServices.loginUser(req.body);
   const { accessToken, refreshToken } = result;
   res.cookie("refreshToken", refreshToken, {

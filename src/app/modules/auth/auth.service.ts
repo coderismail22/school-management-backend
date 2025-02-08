@@ -18,25 +18,17 @@ const loginUser = async (payload: TLoginUser) => {
     throw new AppError(httpStatus.NOT_FOUND, "User does not exist.");
   }
 
-  // 2. Check if the user is deleted
-  if (user?.isDeleted) {
-    throw new AppError(httpStatus.BAD_REQUEST, "The user has been deleted.");
-  }
-
-  //3. Check if the user is blocked
+  //2. Check if the user is blocked
   if (user?.status === "blocked") {
     throw new AppError(httpStatus.FORBIDDEN, "The user has been blocked.");
   }
 
-  // 4. Check if the password is correct
-  const isPasswordValid = await bcrypt.compare(
-    payload?.password,
-    user.password,
-  );
+  // 3. Check if the password is correct
+  const isPasswordValid = payload?.password === user.password;
+
   if (!isPasswordValid) {
     throw new AppError(httpStatus.FORBIDDEN, "Password is incorrect.");
   }
-  //   TODO: send access and refresh token
 
   // create token and send to the client
   const jwtPayload = { userId: user?.id, email: user?.email, role: user?.role };
@@ -97,23 +89,6 @@ const refreshToken = async (token: string) => {
   if (userStatus === "blocked") {
     throw new AppError(httpStatus.FORBIDDEN, "The user has been blocked.");
   }
-
-  // TODO: check isJWTIssuedAtBeforeChangingPassword
-  // check: isJWTIssuedAtBeforeChangingPassword
-  // if (user?.passwordChangedAt) {
-  //   const isJWTIssuedAtBeforeChangingPassword =
-  //     await User.isJWTIssuedAtBeforeChangingPassword(
-  //       iat as number,
-  //       user.passwordChangedAt,
-  //     );
-
-  // TODO: check isJWTIssuedAtBeforeChangingPassword
-  // if (isJWTIssuedAtBeforeChangingPassword) {
-  //   throw new AppError(
-  //     httpStatus.UNAUTHORIZED,
-  //     "You are not authorized to access!",
-  //   );
-  // }
 
   const jwtPayload = {
     userId: userId,

@@ -5,9 +5,17 @@ import { UserControllers } from "./user.controller";
 import auth from "../../middlewares/auth";
 import { USER_ROLE } from "./user.constant";
 import { TeacherValidations } from "../teacher/teacher.validation";
+import { AdminValidations } from "../admin/admin.validation";
 
 const router = express.Router();
 
+// create admin
+router.post(
+  "/create-admin",
+  // auth(USER_ROLE.superAdmin, USER_ROLE.admin), //TODO: Add a auth role
+  validateRequest(AdminValidations.createAdminValidationSchema),
+  UserControllers.createAdmin,
+);
 // create teacher
 router.post(
   "/create-teacher",
