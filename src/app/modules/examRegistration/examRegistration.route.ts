@@ -20,6 +20,13 @@ router.get(
   ExamRegistrationControllers.getRegistrations,
 );
 
+// Query registrations multiple document output (by examId or studentId)
+router.get(
+  "/exam-specific-registrations/:examId",
+  // validateRequest(ExamRegistrationValidation.getRegistrationsValidationSchema),
+  ExamRegistrationControllers.getSpecificExamRegistrations,
+);
+
 // Get a single document
 router.get(
   "/get-registration",

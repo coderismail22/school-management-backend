@@ -23,7 +23,7 @@ const getExamById = catchAsync(async (req: Request, res: Response) => {
   sendResponse<IExam>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Exam retrieved successfullyyyyyyyyyy",
+    message: "Exam retrieved successfully",
     data: result,
   });
 });
@@ -53,7 +53,7 @@ const deleteExam = catchAsync(async (req: Request, res: Response) => {
 
 const getAllExams = catchAsync(async (req: Request, res: Response) => {
   const filters = req.query;
-  console.log("controller filterQuery", filters);
+  // console.log("controller filterQuery", filters);
   const result = await ExamServices.getAllExamsFromDB(filters);
   sendResponse<IExam[]>(res, {
     statusCode: httpStatus.OK,
@@ -93,7 +93,7 @@ const getExamsForTeacher = catchAsync(async (req: Request, res: Response) => {
       data: [],
     });
   }
-console.log('teacher exam result',result)
+// console.log('teacher exam result',result)
   sendResponse<IExam[]>(res, {
     statusCode: httpStatus.OK,
     success: true,

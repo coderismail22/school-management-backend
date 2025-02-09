@@ -68,6 +68,7 @@ const bulkRegisterWithExamUpdate = async (
   }
 };
 
+//With query filters
 const getRegistrations = async (filters: any): Promise<IExamRegistration[]> => {
   const query: FilterQuery<IExamRegistration> = {};
 
@@ -77,8 +78,19 @@ const getRegistrations = async (filters: any): Promise<IExamRegistration[]> => {
   if (filters.studentId) {
     query.studentId = new Types.ObjectId(filters.studentId);
   }
-
   const registrations = await ExamRegistration.find(query)
+    .populate("examId")
+    .populate("studentId");
+  return registrations;
+};
+
+//Without query filters
+const getSpecificExamRegistrations = async (
+  examId: string,
+): Promise<IExamRegistration[]> => {
+  // const examObjectId = new Types.ObjectId(examId);
+  // console.log("examId", examObjectId);
+  const registrations = await ExamRegistration.find({ examId: examId })
     .populate("examId")
     .populate("studentId");
   return registrations;
@@ -120,6 +132,7 @@ const deleteRegistration = async (
 export const ExamRegistrationServices = {
   bulkRegisterWithExamUpdate,
   getRegistrations,
+  getSpecificExamRegistrations,
   getRegistration,
   deleteRegistration,
 };

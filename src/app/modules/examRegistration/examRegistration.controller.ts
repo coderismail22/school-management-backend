@@ -11,7 +11,10 @@ const bulkRegisterStudents = catchAsync(async (req: Request, res: Response) => {
   const { examId, studentIds } = req.body;
 
   // Call updated service function
-  const result = await ExamRegistrationServices.bulkRegisterWithExamUpdate(examId, studentIds);
+  const result = await ExamRegistrationServices.bulkRegisterWithExamUpdate(
+    examId,
+    studentIds,
+  );
 
   sendResponse<IExamRegistration[]>(res, {
     statusCode: httpStatus.OK,
@@ -21,10 +24,9 @@ const bulkRegisterStudents = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-
+// With query filters
 const getRegistrations = catchAsync(async (req: Request, res: Response) => {
   const filters = req.query;
-  console.log("filters", filters);
   const result = await ExamRegistrationServices.getRegistrations(filters);
   sendResponse<IExamRegistration[]>(res, {
     statusCode: httpStatus.OK,
@@ -33,6 +35,22 @@ const getRegistrations = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
+// Without query filters
+const getSpecificExamRegistrations = catchAsync(
+  async (req: Request, res: Response) => {
+    const examId = req.params.examId;
+    const result =
+      await ExamRegistrationServices.getSpecificExamRegistrations(examId);
+    sendResponse<IExamRegistration[]>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Exam specific registrations fetched successfully",
+      data: result,
+    });
+  },
+);
+
 const getRegistration = catchAsync(async (req: Request, res: Response) => {
   const filters = req.query;
   // console.log("filters", filters);
@@ -71,6 +89,7 @@ const deleteExamRegistration = catchAsync(
 export const ExamRegistrationControllers = {
   bulkRegisterStudents,
   getRegistrations,
+  getSpecificExamRegistrations,
   getRegistration,
   deleteExamRegistration,
 };
