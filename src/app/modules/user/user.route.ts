@@ -16,6 +16,7 @@ router.post(
   validateRequest(AdminValidations.createAdminValidationSchema),
   UserControllers.createAdmin,
 );
+
 // create teacher
 router.post(
   "/create-teacher",

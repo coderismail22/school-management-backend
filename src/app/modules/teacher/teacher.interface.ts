@@ -1,29 +1,17 @@
 export interface ITeacher {
   _id?: string;
   name: string;
-  teacherId: string;
   profileImg: string;
+  teacherId: string;
+  dob: string;
+  gender: string;
+  designation: string;
+  subject: string;
   email: string;
-  address: string;
+  password: string;
   phone: string;
   bloodGroup: string;
-  salary: number;
-  password: string;
-  assignedSubjects: IAssignedSubject[];
-  assignedClasses: IAssignedClass[];
+  address: string;
   createdAt?: Date;
   updatedAt?: Date;
-}
-
-export interface IAssignedSubject {
-  subjectId: string;
-  subjectName: string;
-  group?: string; // Science, Commerce, Arts (only for 9-12)
-}
-
-export interface IAssignedClass {
-  classId: string;
-  className: string;
-  section: string;
-  shift?: string; // Morning/Evening
 }
