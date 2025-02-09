@@ -80,7 +80,11 @@ const updateTeacherInDB = async (teacherId: string, payload: any) => {
       "address",
       "phone",
       "bloodGroup",
-      "salary",
+      "teacherId",
+      "dob",
+      "gender",
+      "designation",
+      "subject",
     ];
 
     // Separate updates for User and Teacher
@@ -195,7 +199,6 @@ const createStudentInDB = async (payload: IStudent) => {
 
 const updateStudentInDB = async (studentId: string, payload: any) => {
   const { ...updates } = payload;
-  console.log("service updates", { ...updates });
 
   if (!studentId) {
     throw new AppError(httpStatus.BAD_REQUEST, "Student ID is required");
@@ -212,19 +215,26 @@ const updateStudentInDB = async (studentId: string, payload: any) => {
     // Define which fields belong to the Student model
     const studentFields: Array<keyof IStudent> = [
       "name",
-      "roll",
-      "email",
-      "password",
+      "studentId",
       "profileImg",
-      "address",
-      "phone",
-      "bloodGroup",
       "year",
-      "version",
-      "shift",
+      "birthRegId",
+      "bloodGroup",
+      "gender",
+      "phone",
+      "email",
+      "address",
       "class",
       "section",
       "group",
+      "version",
+      "shift",
+      "roll",
+      "fatherName",
+      "fatherPhone",
+      "motherName",
+      "motherPhone",
+      "password",
     ];
 
     // Separate updates for User and Student
