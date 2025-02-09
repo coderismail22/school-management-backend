@@ -56,6 +56,13 @@ router.patch(
   UserControllers.updateStudent,
 );
 
+// delete student
+router.delete(
+  "/delete-student/:studentId",
+  // auth(USER_ROLE.superAdmin, USER_ROLE.admin), //TODO: Add a auth role
+  UserControllers.deleteStudent,
+);
+
 // router.post(
 //   "/create-admin",
 //   // auth(USER_ROLE.superAdmin, USER_ROLE.admin), //TODO: Add a auth role
