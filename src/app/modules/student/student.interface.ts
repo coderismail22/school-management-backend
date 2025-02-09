@@ -2,20 +2,25 @@ export interface IStudent {
   _id?: string;
   name: string;
   studentId: string;
-  roll: string;
-  profileImg?: string;
-  email: string;
-  password: string;
+  profileImg: string;
+  year: string;
+  birthRegId: string;
+  bloodGroup: string;
+  gender: string;
   phone: string;
-  guardianName: string;
+  email: string;
   address: string;
-  bloodGroup: "A+" | "A-" | "B+" | "B-" | "O+" | "O-" | "AB+" | "AB-";
-  year: string; // Academic year as string (e.g., "2025")
-  version: string;
-  shift: "Morning" | "Day" | "Evening";
   class: string;
   section: string;
-  group?: "Science" | "Commerce" | "Arts" | "NA"; // Only for class 9-12
+  group: string;
+  version: string;
+  shift: string;
+  roll: string;
+  fatherName: string;
+  fatherPhone: string;
+  motherName: string;
+  motherPhone: string;
+  password: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
