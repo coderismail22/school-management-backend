@@ -157,6 +157,43 @@ const updateTeacherInDB = async (teacherId: string, payload: any) => {
   }
 };
 
+const deleteTeacherFromDB = async (teacherId: string) => {
+  if (!teacherId) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Teacher ID is required");
+  }
+
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    // Find the teacher by ID
+    const teacher = await Teacher.findById(teacherId).session(session);
+    if (!teacher) {
+      throw new AppError(httpStatus.NOT_FOUND, "Teacher not found");
+    }
+
+    // Find the associated user using the email
+    const user = await User.findOne({ email: teacher.email }).session(session);
+    if (!user) {
+      throw new AppError(httpStatus.NOT_FOUND, "Associated user not found");
+    }
+
+    // Delete the teacher document
+    await Teacher.findByIdAndDelete(teacherId, { session });
+
+    // Delete the associated user document
+    await User.findByIdAndDelete(user._id, { session });
+
+    await session.commitTransaction();
+    await session.endSession();
+  } catch (err: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw err;
+  }
+};
+
 const createStudentInDB = async (payload: IStudent) => {
   // Create a user object
   const userData: Partial<IUser> = {};
@@ -394,6 +431,7 @@ const changeStatusInDB = async (id: string, status: string) => {
 export const UserServices = {
   createTeacherInDB,
   updateTeacherInDB,
+  deleteTeacherFromDB,
   createStudentInDB,
   updateStudentInDB,
   createAdminInDB,

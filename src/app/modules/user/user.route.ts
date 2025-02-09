@@ -33,6 +33,13 @@ router.patch(
   UserControllers.updateTeacher,
 );
 
+// delete teacher
+router.delete(
+  "/delete-teacher/:teacherId",
+  // auth(USER_ROLE.superAdmin, USER_ROLE.admin), //TODO: Add a auth role
+  UserControllers.deleteTeacher,
+);
+
 // create student
 router.post(
   "/register-student",

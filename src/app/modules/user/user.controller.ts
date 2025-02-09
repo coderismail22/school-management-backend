@@ -24,6 +24,17 @@ const updateTeacher = catchAsync(async (req, res) => {
   });
 });
 
+const deleteTeacher = catchAsync(async (req, res) => {
+  const teacherId = req.params.teacherId;
+  await UserServices.deleteTeacherFromDB(teacherId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Teacher deleted successfully",
+  });
+});
+
+
 const createStudent = catchAsync(async (req, res) => {
   const result = await UserServices.createStudentInDB(req.body);
   sendResponse(res, {
@@ -87,6 +98,7 @@ const getMe = catchAsync(async (req, res) => {
 export const UserControllers = {
   createTeacher,
   updateTeacher,
+  deleteTeacher,
   createStudent,
   updateStudent,
   createAdmin,
