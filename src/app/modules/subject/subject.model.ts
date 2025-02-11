@@ -74,11 +74,11 @@ const SubjectSchema = new Schema<ISubject>(
       required: true,
       default: 0,
     },
-    plainMark: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
+    // plainMark: {
+    //   type: Number,
+    //   required: true,
+    //   default: 0,
+    // },
     totalMark: {
       type: Number,
       required: true,

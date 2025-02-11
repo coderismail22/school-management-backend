@@ -7,6 +7,9 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../../config";
 import { createToken } from "./auth.utils";
 import sendEmail from "../../utils/sendEmail";
+import { Admin } from "../admin/admin.model";
+import { Student } from "../student/student.model";
+import { Teacher } from "../teacher/teacher.model";
 
 // login
 const loginUser = async (payload: TLoginUser) => {
@@ -20,18 +23,41 @@ const loginUser = async (payload: TLoginUser) => {
 
   //2. Check if the user is blocked
   if (user?.status === "blocked") {
-    throw new AppError(httpStatus.FORBIDDEN, "The user has been blocked.");
+    throw new AppError(httpStatus.NOT_FOUND, "The user has been blocked.");
   }
 
   // 3. Check if the password is correct
   const isPasswordValid = payload?.password === user.password;
 
   if (!isPasswordValid) {
-    throw new AppError(httpStatus.FORBIDDEN, "Password is incorrect.");
+    throw new AppError(httpStatus.NOT_FOUND, "Password is incorrect.");
   }
 
-  // create token and send to the client
-  const jwtPayload = { userId: user?.id, email: user?.email, role: user?.role };
+  // 4. Prepare JWT Payload
+  const jwtPayload: {
+    userId: string;
+    email: string;
+    role: string;
+    adminId?: string;
+    teacherId?: string;
+    studentId?: string;
+  } = {
+    userId: user._id.toString(),
+    email: user.email,
+    role: user.role,
+  };
+
+  // Assign role-based IDs
+  if (user.role === "superAdmin" || user.role === "admin") {
+    const admin = await Admin.findOne({ email: user.email });
+    if (admin) jwtPayload.adminId = admin._id.toString();
+  } else if (user.role === "teacher") {
+    const teacher = await Teacher.findOne({ email: user.email });
+    if (teacher) jwtPayload.teacherId = teacher._id.toString();
+  } else if (user.role === "student") {
+    const student = await Student.findOne({ email: user.email });
+    if (student) jwtPayload.studentId = student._id.toString();
+  }
 
   // generate access token
   const accessToken = createToken(

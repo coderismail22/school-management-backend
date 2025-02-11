@@ -92,7 +92,6 @@ const deleteExamFromDB = async (examId: string): Promise<IExam> => {
 
 const getAllExamsFromDB = async (filters: any): Promise<IExam[]> => {
   const filterQuery: FilterQuery<IExam> = {};
-  console.log("service filterQuery", filterQuery);
   if (filters.year) filterQuery.year = filters.year;
   if (filters.version) filterQuery.version = filters.version;
   if (filters.class) filterQuery.class = filters.class;

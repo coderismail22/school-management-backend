@@ -9,7 +9,7 @@ export interface ISubject extends Document {
   shift: "Morning" | "Day" | "Evening";
   section: string; // e.g., "A"
   group: "Science" | "Commerce" | "Arts" | "NA";
-  hasPlainMark: boolean; // If there's no MCQ/CQ/Practical
+  // hasPlainMark: boolean; // If there's no MCQ/CQ/Practical
   hasMCQ: boolean;
   hasCQ: boolean;
   hasPractical: boolean;

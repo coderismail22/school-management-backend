@@ -16,7 +16,7 @@ const createSubjectValidationSchema = z.object({
       .enum(["Science", "Commerce", "Arts", "NA"])
       .optional()
       .default("NA"),
-    hasPlainMark: z.boolean().optional(),
+    // hasPlainMark: z.boolean().optional(),
     hasMCQ: z.boolean().optional(),
     hasCQ: z.boolean().optional(),
     hasPractical: z.boolean().optional(),
@@ -39,7 +39,7 @@ const updateSubjectValidationSchema = z.object({
     shift: z.enum(["Morning", "Day", "Evening"]).optional(),
     section: z.string().optional(),
     group: z.enum(["Science", "Commerce", "Arts", "NA"]).optional(),
-    hasPlainMark: z.boolean().optional(),
+    // hasPlainMark: z.boolean().optional(),
     hasMCQ: z.boolean().optional(),
     hasCQ: z.boolean().optional(),
     hasPractical: z.boolean().optional(),
