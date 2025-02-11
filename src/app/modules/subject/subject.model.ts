@@ -39,11 +39,11 @@ const SubjectSchema = new Schema<ISubject>(
       enum: ["Science", "Commerce", "Arts", "NA"],
       default: "NA",
     },
-    hasPlainMark: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
+    // hasPlainMark: {
+    //   type: Boolean,
+    //   required: true,
+    //   default: false,
+    // },
     hasMCQ: {
       type: Boolean,
       required: true,

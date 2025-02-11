@@ -41,6 +41,8 @@ const deleteSubjectFromDB = async (subjectId: string): Promise<ISubject> => {
   return subject;
 };
 
+//TODO: Add type here
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getAllSubjectsFromDB = async (filters: any): Promise<ISubject[]> => {
   const filterQuery: FilterQuery<ISubject> = {};
 
