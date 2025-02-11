@@ -12,7 +12,7 @@ const router = express.Router();
 // create admin
 router.post(
   "/create-admin",
-  // auth(USER_ROLE.superAdmin, USER_ROLE.admin), //TODO: Add a auth role
+  auth(USER_ROLE.admin),
   validateRequest(AdminValidations.createAdminValidationSchema),
   UserControllers.createAdmin,
 );
@@ -20,7 +20,7 @@ router.post(
 // create teacher
 router.post(
   "/create-teacher",
-  // auth(USER_ROLE.superAdmin, USER_ROLE.admin), //TODO: Add a auth role
+  auth(USER_ROLE.admin),
   validateRequest(TeacherValidations.createTeacherValidationSchema),
   UserControllers.createTeacher,
 );
@@ -28,7 +28,7 @@ router.post(
 // update teacher
 router.patch(
   "/update-teacher/:teacherId",
-  // auth(USER_ROLE.superAdmin, USER_ROLE.admin), //TODO: Add a auth role
+  auth(USER_ROLE.admin),
   validateRequest(TeacherValidations.updateTeacherValidationSchema),
   UserControllers.updateTeacher,
 );
@@ -36,14 +36,14 @@ router.patch(
 // delete teacher
 router.delete(
   "/delete-teacher/:teacherId",
-  // auth(USER_ROLE.superAdmin, USER_ROLE.admin), //TODO: Add a auth role
+  auth(USER_ROLE.admin),
   UserControllers.deleteTeacher,
 );
 
 // create student
 router.post(
   "/register-student",
-  // auth(USER_ROLE.superAdmin, USER_ROLE.admin), //TODO: Add a auth role
+  auth(USER_ROLE.admin),
   validateRequest(StudentValidations.createStudentValidationSchema),
   UserControllers.createStudent,
 );
@@ -51,7 +51,7 @@ router.post(
 // update student
 router.patch(
   "/update-student/:studentId",
-  // auth(USER_ROLE.superAdmin, USER_ROLE.admin), //TODO: Add a auth role
+  auth(USER_ROLE.admin),
   validateRequest(StudentValidations.updateStudentValidationSchema),
   UserControllers.updateStudent,
 );
@@ -59,17 +59,11 @@ router.patch(
 // delete student
 router.delete(
   "/delete-student/:studentId",
-  // auth(USER_ROLE.superAdmin, USER_ROLE.admin), //TODO: Add a auth role
+  auth(USER_ROLE.admin),
   UserControllers.deleteStudent,
 );
 
-// router.post(
-//   "/create-admin",
-//   // auth(USER_ROLE.superAdmin, USER_ROLE.admin), //TODO: Add a auth role
-//   validateRequest(AdminValidations.createAdminValidationSchema),
-//   UserControllers.createAdmin,
-// );
-
+// TODO: Add change status route (if needed)
 // router.post(
 //   "/change-status/:id",
 //   auth("admin"),
@@ -77,10 +71,11 @@ router.delete(
 //   UserControllers.changeStatus,
 // );
 
-router.get(
-  "/me",
-  auth(USER_ROLE.superAdmin, USER_ROLE.admin, USER_ROLE.student),
-  UserControllers.getMe,
-);
+// TODO: Add me route (if needed)
+// router.get(
+//   "/me",
+//   auth(USER_ROLE.superAdmin, USER_ROLE.admin, USER_ROLE.student),
+//   UserControllers.getMe,
+// );
 
 export const UserRoutes = router;

@@ -8,9 +8,6 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 
 const createOrUpdateResult = catchAsync(async (req: Request, res: Response) => {
-  // In a real scenario, you would check if the teacher is allowed to update the subject:
-  // e.g. confirm that (examId, examSubjectId).subjectTeacher == currentTeacherId
-  // We'll skip the full auth logic here for brevity.
   const payload = req.body;
   const result = await ExamResultServices.createOrUpdateExamResult(payload);
   sendResponse<IExamResult>(res, {
@@ -38,7 +35,7 @@ const getAllResults = catchAsync(async (req: Request, res: Response) => {
   sendResponse<IExamResult[]>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Exam results retrieved successfullyyyyyyy",
+    message: "Exam results retrieved successfully",
     data: results,
   });
 });

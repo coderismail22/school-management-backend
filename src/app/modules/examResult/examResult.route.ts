@@ -3,14 +3,17 @@ import express from "express";
 import validateRequest from "../../middlewares/validateRequest";
 import { ExamResultValidation } from "./examResult.validation";
 import { ExamResultControllers } from "./examResult.controller";
+import { USER_ROLE } from "../user/user.constant";
+import auth from "../../middlewares/auth";
 
 const router = express.Router();
 
 // Create/Update marks for a single student
 router.post(
   "/create-or-update",
+  auth(USER_ROLE.admin, USER_ROLE.teacher),
   validateRequest(ExamResultValidation.createOrUpdateResultSchema),
-  ExamResultControllers.createOrUpdateResult
+  ExamResultControllers.createOrUpdateResult,
 );
 
 // Get single result by _id
