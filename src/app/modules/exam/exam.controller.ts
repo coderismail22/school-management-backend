@@ -74,15 +74,21 @@ const getExamsForTeacher = catchAsync(async (req: Request, res: Response) => {
     group,
     teacherId,
   } = req.query;
-
+  const yearStr = typeof year === "string" ? year : undefined;
+  const versionStr = typeof version === "string" ? version : undefined;
+  const classNameStr = typeof className === "string" ? className : undefined;
+  const shiftStr = typeof shift === "string" ? shift : undefined;
+  const sectionStr = typeof section === "string" ? section : undefined;
+  const groupStr = typeof group === "string" ? group : undefined;
+  const teacherIdStr = typeof teacherId === "string" ? teacherId : undefined;
   const result = await ExamServices.getTeacherExams({
-    year,
-    version,
-    className,
-    shift,
-    section,
-    group,
-    teacherId,
+    year: yearStr,
+    version: versionStr,
+    className: classNameStr,
+    shift: shiftStr,
+    section: sectionStr,
+    group: groupStr,
+    teacherId: teacherIdStr,
   });
 
   if (result.length === 0) {
@@ -93,7 +99,7 @@ const getExamsForTeacher = catchAsync(async (req: Request, res: Response) => {
       data: [],
     });
   }
-// console.log('teacher exam result',result)
+  // console.log('teacher exam result',result)
   sendResponse<IExam[]>(res, {
     statusCode: httpStatus.OK,
     success: true,

@@ -6,12 +6,6 @@ import { FilterQuery } from "mongoose";
 import AppError from "../../errors/AppError";
 import { Subject } from "../subject/subject.model";
 
-// OLD
-// const createExamInDB = async (payload: IExam): Promise<IExam> => {
-//   const newExam = await Exam.create(payload);
-//   return newExam;
-// };
-
 // New Solution:
 const createExamInDB = async (payload: IExam): Promise<IExam> => {
   // 1. Fetch the subjects that match the criteria (e.g., class, year, etc.)
@@ -39,15 +33,13 @@ const createExamInDB = async (payload: IExam): Promise<IExam> => {
     shift: subject.shift,
     section: subject.section,
     group: subject.group,
-    hasPlainMarks: subject.hasPlainMarks,
     hasMCQ: subject.hasMCQ,
     hasCQ: subject.hasCQ,
     hasPractical: subject.hasPractical,
-    mcqMarks: subject.mcqMarks,
-    cqMarks: subject.cqMarks,
-    practicalMarks: subject.practicalMarks,
-    plainMarks: subject.plainMarks,
-    totalMarks: subject.totalMarks,
+    mcqMarks: subject.mcqMark,
+    cqMarks: subject.cqMark,
+    practicalMarks: subject.practicalMark,
+    totalMarks: subject.totalMark,
     subjectTeacher: subject.subjectTeacher,
   }));
 
@@ -90,6 +82,8 @@ const deleteExamFromDB = async (examId: string): Promise<IExam> => {
   return exam;
 };
 
+// TODO: Add a type here
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getAllExamsFromDB = async (filters: any): Promise<IExam[]> => {
   const filterQuery: FilterQuery<IExam> = {};
   if (filters.year) filterQuery.year = filters.year;
@@ -117,6 +111,8 @@ interface ExamFilters {
 }
 
 const getTeacherExams = async (filters: ExamFilters): Promise<IExam[]> => {
+  //TODO: Add a type here
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const filterQuery: any = {};
 
   // Add filters to the query
