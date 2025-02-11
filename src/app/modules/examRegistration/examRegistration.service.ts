@@ -69,6 +69,8 @@ const bulkRegisterWithExamUpdate = async (
 };
 
 //With query filters
+// TODO: Add a type here
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getRegistrations = async (filters: any): Promise<IExamRegistration[]> => {
   const query: FilterQuery<IExamRegistration> = {};
 
@@ -89,14 +91,15 @@ const getSpecificExamRegistrations = async (
   examId: string,
 ): Promise<IExamRegistration[]> => {
   // const examObjectId = new Types.ObjectId(examId);
-  // console.log("examId", examObjectId);
   const registrations = await ExamRegistration.find({ examId: examId })
     .populate("examId")
     .populate("studentId");
   return registrations;
 };
 
+// TODO: Add a type here
 const getRegistration = async (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filters: any,
 ): Promise<IExamRegistration | null> => {
   const query: FilterQuery<IExamRegistration> = {};

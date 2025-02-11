@@ -53,7 +53,6 @@ const getSpecificExamRegistrations = catchAsync(
 
 const getRegistration = catchAsync(async (req: Request, res: Response) => {
   const filters = req.query;
-  // console.log("filters", filters);
   const result = await ExamRegistrationServices.getRegistration(filters);
   if (result === null) {
     sendResponse<IExamRegistration>(res, {

@@ -34,9 +34,6 @@ const createOrUpdateExamResult = async (
     throw new AppError(httpStatus.NOT_FOUND, "Subject not found");
   }
 
-  // console.log("mark entry", payload);
-  // console.log("exam", exam);
-
   // Validate each type of mark (Less Than, Greater Than, Negative, Undefined, Null etc.)
   validateMark(payload?.marks?.mcqMark ?? 0, subject?.mcqMark ?? 0, "MCQ");
   validateMark(payload?.marks?.cqMark ?? 0, subject?.cqMark ?? 0, "CQ");
@@ -96,7 +93,10 @@ const getExamResult = async (id: string): Promise<IExamResult> => {
 };
 
 // For retrieving multiple results, e.g. to show a student's entire result or all results for an exam
+// TODO: Add a type here
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getExamResults = async (query: any): Promise<IExamResult[]> => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const findQuery: any = {};
   if (query.examId) findQuery.examId = new Types.ObjectId(query.examId);
   if (query.examSubjectId) findQuery.examSubjectId = query.examSubjectId;
@@ -104,8 +104,6 @@ const getExamResults = async (query: any): Promise<IExamResult[]> => {
     findQuery.studentId = new Types.ObjectId(query.studentId);
   if (query.teacherId)
     findQuery.teacherId = new Types.ObjectId(query.teacherId);
-
-  // console.log("find query", findQuery);
 
   const results = await ExamResult.find(findQuery)
     .populate("examId")

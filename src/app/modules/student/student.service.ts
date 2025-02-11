@@ -9,9 +9,7 @@ const createStudentInDB = async (payload: IStudent) => {
 };
 
 const getStudentFromDB = async (studentId: string) => {
-  console.log(studentId)
   const student = await Student.findById(studentId);
-  console.log(student)
   if (!student) throw new AppError(httpStatus.NOT_FOUND, "Student not found");
   return student;
 };

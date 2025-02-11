@@ -46,8 +46,6 @@ const createStudent = catchAsync(async (req, res) => {
 
 const updateStudent = catchAsync(async (req, res) => {
   const studentId = req.params.studentId;
-  // console.log("controller", studentId);
-  // console.log("controller", req.body);
   const result = await UserServices.updateStudentInDB(studentId, req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,

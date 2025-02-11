@@ -7,7 +7,15 @@ import sendResponse from "../../utils/sendResponse";
 
 const loadAttendance = catchAsync(async (req: Request, res: Response) => {
   // Extract 'group' as well
-  const { year, version, class: className, section, shift, date, group } = req.query;
+  const {
+    year,
+    version,
+    class: className,
+    section,
+    shift,
+    date,
+    group,
+  } = req.query;
 
   const result = await AttendanceServices.loadAttendanceFromDB({
     year: year as string,
@@ -28,8 +36,6 @@ const loadAttendance = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateAttendance = catchAsync(async (req: Request, res: Response) => {
-  console.log("hit");
-
   // The body is an array of attendance objects, each presumably with group
   const attendances = req.body;
   const result = await AttendanceServices.updateAttendanceInDB(attendances);
