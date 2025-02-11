@@ -3,12 +3,15 @@ import express from "express";
 import validateRequest from "../../middlewares/validateRequest";
 import { ExamRegistrationValidation } from "./examRegistration.validation";
 import { ExamRegistrationControllers } from "./examRegistration.controller";
+import { USER_ROLE } from "../user/user.constant";
+import auth from "../../middlewares/auth";
 
 const router = express.Router();
 
 // Bulk register
 router.post(
   "/bulk-register",
+  auth(USER_ROLE.admin),
   validateRequest(ExamRegistrationValidation.bulkRegisterValidationSchema),
   ExamRegistrationControllers.bulkRegisterStudents,
 );
@@ -37,6 +40,7 @@ router.get(
 // Delete a specific registration
 router.delete(
   "/:registrationId",
+  auth(USER_ROLE.admin),
   ExamRegistrationControllers.deleteExamRegistration,
 );
 

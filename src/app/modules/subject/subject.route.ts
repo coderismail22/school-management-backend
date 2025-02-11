@@ -3,11 +3,14 @@ import express from "express";
 import validateRequest from "../../middlewares/validateRequest";
 import { SubjectValidations } from "./subject.validation";
 import { SubjectController } from "./subject.controller";
+import { USER_ROLE } from "../user/user.constant";
+import auth from "../../middlewares/auth";
 
 const router = express.Router();
 
 router.post(
   "/create-subject",
+  auth(USER_ROLE.admin),
   validateRequest(SubjectValidations.createSubjectValidationSchema),
   SubjectController.createSubject,
 );
@@ -20,8 +23,12 @@ router.patch(
   SubjectController.updateSubject,
 );
 
-router.delete("/:subjectId", SubjectController.deleteSubject);
+router.delete(
+  "/:subjectId",
+  auth(USER_ROLE.admin),
+  SubjectController.deleteSubject,
+);
 
-router.get("/", SubjectController.getAllSubjects);
+router.get("/", auth(USER_ROLE.admin), SubjectController.getAllSubjects);
 
 export const SubjectRoutes = router;
